@@ -27,7 +27,7 @@ class Hbv(object):
     _data = "Darbogaz.csv"
 
     def __init__(self, area, input_parameters, States, calibration=False, method='PSO', Objective_fun='nse',
-                 maxiter=15,Spinoff = 0):
+                 maxiter=15,Spinoff=0):
         self._working_directory = None
         self.Data_file = None
         self.df = None
