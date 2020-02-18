@@ -5,19 +5,19 @@ import geopandas as gpd
 import pandas as pd
 import matplotlib.pyplot as plt
 
-file = '/media/cak/AT/Datasets/EOBS/temp.nc'
+file = '/media/cak/AT/Datasets/EOBS/temp2.nc'
 # file = '/media/cak/AT/Datasets/SM2RAIN/SM2RAIN_ASCAT_0125_2016_v1.1.nc'
 shp = '/home/cak/Desktop/SHP/Karasu_all.shp'
-# shp = '/home/cak/Desktop/at/NUTS_RG_60M_2016_4326_LEVL_0.shp'
-num = 1
+shp = '/home/cak/Desktop/at/NUTS_RG_60M_2016_4326_LEVL_0.shp'
+num = 37
 
 nuts = gpd.read_file(shp)
 nuts.head()
 d = xr.open_mfdataset(file, chunks={'time': 10})
 d = d.assign_coords(longitude=(((d.longitude + 180) % 360) - 180)).sortby('longitude')
 
-nuts_mask_poly = regionmask.Regions(name='nuts_mask', numbers=list(range(0, num)), names=list(nuts.ID),
-                                        abbrevs=list(nuts.ID),
+nuts_mask_poly = regionmask.Regions(name='nuts_mask', numbers=list(range(0, num)), names=list(nuts.NUTS_ID),
+                                        abbrevs=list(nuts.NUTS_ID),
                                         outlines=list(nuts.geometry.values[i] for i in range(0, num)))
 
 print(nuts_mask_poly)
@@ -36,8 +36,8 @@ lon = mask.longitude.values
 
 print(mask)
 
-ID_REGION = 0
-print(nuts.ID[ID_REGION])
+ID_REGION = 35
+print(nuts.NUTS_ID[ID_REGION])
 
 sel_mask = mask.where(mask == ID_REGION).values
 
@@ -52,7 +52,7 @@ out_sel.t2m.isel(time = 0).plot(ax = ax)
 nuts.plot(ax = ax, alpha = 0.8, facecolor = 'none')
 plt.show()
 
-x = out_sel.groupby('time').mean()
+x = out_sel.groupby('time.day').reduce(np.mean).mean()(scheduler='sync')
 
 x.t2m.plot()
 plt.show()
