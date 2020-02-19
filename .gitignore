@@ -29,7 +29,6 @@ __pycache__
 .coverage
 .pytest_cache
 src
-
 *.swp
 *.map
 .idea/
@@ -44,3 +43,4 @@ geckodriver.log
 netcdf.py
 /venv
 SM2RAIN.ipynb
+/Data/netcdf/*
