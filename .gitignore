@@ -44,3 +44,4 @@ netcdf.py
 /venv
 SM2RAIN.ipynb
 /Data/netcdf/*
+/Notebook/*
