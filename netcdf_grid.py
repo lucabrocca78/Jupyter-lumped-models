@@ -5,7 +5,7 @@ import geopandas as gpd
 import pandas as pd
 import matplotlib.pyplot as plt
 
-file = './Data/netcdf/2h_temp.nc'
+file = './Data/ERA5/test.nc'
 # shp = './Data/shp/Karasu_all.shp'
 shp = './Data/shp/Karasu.shp'
 shp = './Data/shp/test_data.shp'
@@ -84,4 +84,4 @@ def grid2ts(file, shp):
     df_h.plot()
     plt.show()
 
-# grid2ts(file,shp)
+grid2ts(file,shp)
