@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 
 file = './Data/ERA5/test.nc'
 # shp = './Data/shp/Karasu_all.shp'
-shp = './Data/shp/Karasu.shp'
+# shp = './Data/shp/Karasu.shp'
 shp = './Data/shp/test_data.shp'
-shp = './file_uploads/drawed.shp'
+shp = '/home/cak/Desktop/at/NUTS_RG_60M_2016_4326_LEVL_0.shp'
 
 
 def grid2ts(file, shp):
@@ -19,7 +19,7 @@ def grid2ts(file, shp):
     # shp = '/home/cak/Desktop/SHP/Karasu_all.shp'
     # shp = '/home/cak/Desktop/at/NUTS_RG_60M_2016_4326_LEVL_0.shp'
     resample = False
-    factor = 2
+    factor = 37
 
     nuts = gpd.read_file(shp)
     # nuts.head()
@@ -27,8 +27,8 @@ def grid2ts(file, shp):
     d = xr.open_mfdataset(file, chunks={'time': 10})
     d = d.assign_coords(longitude=(((d.longitude + 180) % 360) - 180)).sortby('longitude')
 
-    nuts_mask_poly = regionmask.Regions(name='nuts_mask', numbers=list(range(0, num)), names=list(nuts.ID),
-                                        abbrevs=list(nuts.ID),
+    nuts_mask_poly = regionmask.Regions(name='nuts_mask', numbers=list(range(0, num)), names=list(nuts.FID),
+                                        abbrevs=list(nuts.FID),
                                         outlines=list(nuts.geometry.values[i] for i in range(0, num)))
 
     if resample:
@@ -56,9 +56,9 @@ def grid2ts(file, shp):
     data = {}
 
     for i in range(num):
-        ID_REGION = i
+        ID_REGION = 35
         # print(nuts.ID[ID_REGION])
-        Zone = 'Zone ' + nuts.ID[ID_REGION]
+        Zone = 'Zone ' + nuts.FID[ID_REGION]
         sel_mask = mask.where(mask == ID_REGION).values
 
         id_lon = lon[np.where(~np.all(np.isnan(sel_mask), axis=0))]

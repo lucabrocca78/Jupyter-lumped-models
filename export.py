@@ -6,13 +6,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sqlite3
 
-
 file = './Data/ERA5/test.nc'
 # shp = './Data/shp/Karasu_all.shp'
 shp = './Data/shp/Karasu.shp'
 shp = './Data/shp/test_data.shp'
 shp = './file_uploads/drawed.shp'
-
+lat = np.loadtxt('lat.txt')
+lon = np.loadtxt('lon.txt')
 
 def grid2ts(file, shp):
     # file = '/media/cak/AT/Datasets/EOBS/temp2.nc'
@@ -30,18 +30,29 @@ def grid2ts(file, shp):
     d = d.assign_coords(longitude=(((d.longitude + 180) % 360) - 180)).sortby('longitude')
 
     time = d.time.values
-    lat = d.t2m.latitude.values
-    lon = d.t2m.longitude.values
+    all = len(lat) * len(lon)
+    # lat = d.t2m.latitude.values
+    # lon = d.t2m.longitude.values
     data = {}
+    # time = pd.date_range('2019-01-01', freq='H', periods=2)
+    data = pd.DataFrame(columns=['Date', 'Data', 'ID'])
+    index_db = pd.DataFrame(columns=['ID', 'Lat', 'Lon'])
+    index = 1
+    for lat_ in lat[:5]:
+        for lon_ in lon[:5]:
+            dsloc = d.sel(longitude=lon_, latitude=lat_, time=time, method='nearest')
+            t = {'Date': time, 'Data': dsloc.t2m.values, 'ID': len(time) * [index]}
+            temp = pd.DataFrame(t)
+            data = data.append(temp)
+            index_db = index_db.append({'ID': index, 'Lat': lat_, 'Lon': lon_}, ignore_index=True)
+            print(lat_, lon_, index, '/', all)
+            index += 1
 
-    for lat_ in lat[:2]:
-        for lon_ in lon[:2]:
-            dsloc = d.sel(longitude=lon_, latitude=lat_, method='nearest')
-            data.update({'Date': time, 'Data': dsloc.t2m.values, 'Lat': lat_, 'lon': lon_})
-            print(lat_,lon_)
-
-    df = pd.DataFrame(data)
+    # data = data.subtract(273, axis='Data')
     conn = sqlite3.connect('./Data/export.db')
-    df.to_sql('results', conn, if_exists='replace', index=False)
+    data.to_sql('results', conn, if_exists='replace', index=False)
+    conn = sqlite3.connect('./Data/index.db')
+    index_db.to_sql('Coordinates', conn, if_exists='replace', index=False)
 
-grid2ts(file,shp)
+
+grid2ts(file, shp)
