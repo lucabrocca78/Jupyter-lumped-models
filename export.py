@@ -38,8 +38,8 @@ def grid2ts(file, shp):
     data = pd.DataFrame(columns=['Date', 'Data', 'ID'])
     index_db = pd.DataFrame(columns=['ID', 'Lat', 'Lon'])
     index = 1
-    for lat_ in lat[:5]:
-        for lon_ in lon[:5]:
+    for lat_ in lat[:2]:
+        for lon_ in lon:
             dsloc = d.sel(longitude=lon_, latitude=lat_, time=time, method='nearest')
             t = {'Date': time, 'Data': dsloc.t2m.values, 'ID': len(time) * [index]}
             temp = pd.DataFrame(t)
