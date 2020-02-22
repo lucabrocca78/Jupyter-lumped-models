@@ -12,7 +12,7 @@ lon <- read.csv("lon.csv",header=F)
 folder <- '/home/cak/Desktop/jupyter/Notebook/Data/ERA5/'
 files <- list.files(folder, pattern="\\.nc$", recursive=TRUE, full.names=TRUE)
 file <- '/home/cak/Desktop/jupyter/Notebook/Data/ERA5/temp_daily.nc'
-index <- 1
+
 file_num <- 1
 for (currentFile in files) {
   b<-brick(currentFile)
@@ -26,9 +26,10 @@ for (currentFile in files) {
                          , stringsAsFactors = FALSE)
   df_time <- data.frame(Date = date)
   n <- 72
+  index <- 1
   sprintf("Started at: %s", format(Sys.time(), "%a %b %d %X %Y"))
-  for(i in 1:length(lat[2,])) {
-    for(j in 1:length(lon[2,])) {
+  for(i in 1:length(lat[,])) {
+    for(j in 1:length(lon[,])) {
       row <- lat[i,]
       row1 <- lon[j,]
       points<-SpatialPoints(cbind(row1,row))
@@ -43,6 +44,7 @@ for (currentFile in files) {
       df_index <- rbind(df_index, temp1)
       index = index + 1
     }
+    sprintf("Lat %i of %i, file %i of %i ended at: %s", i,length(lat),file_num,length(files),format(Sys.time(), "%a %b %d %X %Y"))
     
   }
   out_file = paste0(toString(file_num),'_.csv')
@@ -50,6 +52,7 @@ for (currentFile in files) {
   df <- within(df, rm(z))
   write.csv(df,out_file)
   write.csv(df_index,out_index)
+  file_num = file_num + 1
 }
 
 
