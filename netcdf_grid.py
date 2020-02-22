@@ -5,12 +5,11 @@ import geopandas as gpd
 import pandas as pd
 import matplotlib.pyplot as plt
 
-file = './Data/ERA5/test.nc'
+file = './Data/ERA5/temp_daily.nc'
 # shp = './Data/shp/Karasu_all.shp'
 # shp = './Data/shp/Karasu.shp'
 shp = './Data/shp/test_data.shp'
 shp = '/home/cak/Desktop/at/NUTS_RG_60M_2016_4326_LEVL_0.shp'
-
 
 def grid2ts(file, shp):
     # file = '/media/cak/AT/Datasets/EOBS/temp2.nc'
@@ -54,7 +53,7 @@ def grid2ts(file, shp):
 
     # print(mask)
     data = {}
-
+    num  = 1
     for i in range(num):
         ID_REGION = 35
         # print(nuts.ID[ID_REGION])
@@ -67,11 +66,11 @@ def grid2ts(file, shp):
         out_sel = d.sel(latitude=slice(id_lat[0], id_lat[-1]), longitude=slice(id_lon[0], id_lon[-1])).compute().where(
             mask == ID_REGION)
 
-        # plt.figure(figsize=(12, 8))
-        # ax = plt.axes()
-        # out_sel.t2m.isel(time=0).plot(ax=ax)
-        # nuts.plot(ax=ax, alpha=0.8, facecolor='none')
-        # plt.show()
+        plt.figure(figsize=(12, 8))
+        ax = plt.axes()
+        out_sel.t2m.isel(time=0).plot(ax=ax)
+        nuts.plot(ax=ax, alpha=0.8, facecolor='none')
+        plt.show()
 
         x = out_sel.groupby('time.day').mean(dim=('latitude', 'longitude'))
         data.update({Zone: x.t2m.values})
