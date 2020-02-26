@@ -1,18 +1,17 @@
 import cdsapi
 import os
-from cdo import *
 import subprocess
 import psycopg2
 import pandas as pd
 import numpy as np
 import datetime
+import pathlib
 
-os.chdir('/home/cak/Desktop/Data')
+PC = ['Cak', 'Hsaf', 'Wr']
+path = pathlib.Path().absolute()
+os.chdir(os.path.join(path, 'Downloaded_data'))
 
 c = cdsapi.Client()
-
-
-# cdo = Cdo()
 
 
 def retrieve(var, year, month, day, area):
@@ -47,6 +46,15 @@ def get_daily_mean(in_file, out_file):
     # Total Preciptation
     daily_mean = 'cdo -b 32 daymean -shifttime,-1hour {} {}'.format(in_file, out_file)
     p = subprocess.Popen([daily_mean], shell=True)
+    p.communicate()
+
+
+def get_daily_sum(in_file, out_file):
+    # Mean Temp
+    # daily_mean = 'cdo daymean -shifttime,-1hour {} {}'.format(in_file, out_file)
+    # Total Preciptation
+    daily_sum = 'cdo -b 32 daysum -shifttime,-1hour {} {}'.format(in_file, out_file)
+    p = subprocess.Popen([daily_sum], shell=True)
     p.communicate()
 
 
@@ -94,21 +102,29 @@ if __name__ == '__main__':
     month = list(range(1, 13))
     # day = list(range(1, 2))
     # month = list(range(1, 2))
-    years = list(range(2010, 2020))
+    years = list(range(2008, 2020))
+    variable = ['2m_temperature', 'potential_evaporation', 'total_precipitation', 'snow_cover']
+    in_ = input('data 2 get')
+    var = variable[int(in_)]
+    print("Getting {}".format(var))
     for year in years:
         # year = 2019
-        variable = ['2m_temperature', 'potential_evaporation', 'total_precipitation', 'snow_cover']
+
+        # variable = var
         # area = '25/35/45/43'
         area = '43/25/35/45'  # N/W/S/E Specify as North/West/South/East in Geographic lat/long degrees. Southern latitudes and Western longitudes must be given as negative numbers.
         # var = variable[3]
-        for var in variable:
-            in_file = retrieve(var, year, month, day, area)
-            daily_mean = str(year) + '_' + var + '_daily.nc'
+
+        in_file = retrieve(var, year, month, day, area)
+        daily_mean = str(year) + '_' + var + '_daily.nc'
+        if var == 'potential_evaporation' or var == 'total_precipitation':
+            get_daily_sum(in_file, daily_mean)
+        else:
             get_daily_mean(in_file, daily_mean)
-            raw_csv = str(year) + '_' + var + '_daily.csv'
-            val2csv(daily_mean, raw_csv)
-            edited_csv = str(year) + '_' + var + '_daily_final.csv'
-            edit_csv(raw_csv, edited_csv)
+        raw_csv = str(year) + '_' + var + '_daily.csv'
+        val2csv(daily_mean, raw_csv)
+        edited_csv = str(year) + '_' + var + '_daily_final.csv'
+        edit_csv(raw_csv, edited_csv)
         # data2database()
 
         # print("Process starterd at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), year))
