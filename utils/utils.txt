@@ -1,0 +1,88 @@
+git reset --hard origin/master
+git pull origin master
+
+/var/lib/postgresql/11/main
+
+sudo rsync -av /var/lib/postgresql /media/D/PostgreSql
+
+sudo mv /var/lib/postgresql/11/main /var/lib/postgresql/11/main.bak
+
+sudo nano /var/lib/postgresql/11/main/postgresql.conf3
+
+
+
+psql 
+
+ALTER USER postgres PASSWORD 'postgres';
+sudo apt install postgis postgresql-12-postgis-3.0
+sudo systemctl stop postgresql
+
+chown postgres /media/D/PostgreSql
+
+sudo rsync -av /var/lib/postgresql /media/cak/D/Postgresql
+sudo mv /var/lib/postgresql/12/main /var/lib/postgresql/12/main.backup
+sudo vi /etc/postgresql/12/main/postgresql.conf
+
+sudo chown postgres -R /var/lib/postgresql/12/main/
+
+sudo chown PostgreSql -R /media/D/PostgreSql/postgresql/12/main/
+
+sudo pg_ctlcluster 12 main start
+sudo chown -R postgres:postgres /media/D/PostgreSql/postgresql**
+
+initdb  -D /media/cak/D/lib/PostgreSql/postgresql/12
+su - postgres -c "initdb --locale en_US.UTF-8 -D '/media/D/PostgreSql/postgresql/12'"
+NetCDF2
+
+cdo daysum -shifttime,-1hour test.nc daysum.nc
+
+/configure --prefix=/home/wang.446/Downloads/temp CFLAGS=-fPIC -g -O2 --enable-netcdf4 --with-netcdf
+
+/configure --enable-netcdf4 --with-netcdf
+
+./configure --prefix=/home/cak/Desktop/cdo-1.9.8 CFLAGS=-fPIC --enable-netcdf4 --with-netcdf
+cmake -DCMAKE_INSTALL_PREFIX=/usr/lib64 ../eccodes-2.16.0-Source
+,
+
+
+import cdsapi
+
+c = cdsapi.Client()
+
+c.retrieve(
+'reanalysis-era5-single-levels',
+{
+    'variable': [
+                    '2m_temperature',
+                ],
+    'product_type':'reanalysis',
+    'year':'2019',
+    'month':'04',
+    'day': [
+                    '01', '02', '03',
+                    '04', '05', '06',
+                ],
+    'area':'25/35/45/43',
+    'time':[
+        '00:00','01:00','02:00',
+        '03:00','04:00','05:00',
+        '06:00','07:00','08:00',
+        '09:00','10:00','11:00',
+        '12:00','13:00','14:00',
+        '15:00','16:00','17:00',
+        '18:00','19:00','20:00',
+        '21:00','22:00','23:00'
+    ],
+    'format':'netcdf'
+},
+'precip.nc')
+
+import subprocess
+
+# Simple command
+subprocess.Popen(['cdo daysum -shifttime,-1hour test.nc daysum.nc' ], shell = True)
+
+cdo daysum -shifttime,-1hour test.nc daysum.nc
+cdo daymean -shifttime,-1hour precip.nc daymean.nc
+
+cdo outputtab,name,date,lon,lat,value precip.nc
