@@ -7,10 +7,12 @@ import pandas as pd
 import numpy as np
 import datetime
 
-os.chdir('/media/cak/D/Datasets/ERA5_Land/Houtly2Daily/Temp')
+os.chdir('/home/cak/Desktop/Data')
 
 c = cdsapi.Client()
-cdo = Cdo()
+
+
+# cdo = Cdo()
 
 
 def retrieve(var, year, month, day, area):
@@ -40,7 +42,10 @@ def retrieve(var, year, month, day, area):
 
 
 def get_daily_mean(in_file, out_file):
-    daily_mean = 'cdo daymean -shifttime,-1hour {} {}'.format(in_file, out_file)
+    # Mean Temp
+    # daily_mean = 'cdo daymean -shifttime,-1hour {} {}'.format(in_file, out_file)
+    # Total Preciptation
+    daily_mean = 'cdo -b 32 daymean -shifttime,-1hour {} {}'.format(in_file, out_file)
     p = subprocess.Popen([daily_mean], shell=True)
     p.communicate()
 
@@ -92,38 +97,40 @@ if __name__ == '__main__':
     years = list(range(2010, 2020))
     for year in years:
         # year = 2019
-        variable = ['2m_temperature', 'potential_evaporation', 'total_precipitation']
-        area = '25/35/45/43'
-        var = variable[0]
-        in_file = retrieve(var, year, month, day, area)
-        daily_mean = str(year) + '_' + var + '_daily.nc'
-        get_daily_mean(in_file, daily_mean)
-        raw_csv = str(year) + '_' + var + '_daily.csv'
-        val2csv(daily_mean, raw_csv)
-        edited_csv = str(year) + '_' + var + '_daily_final.csv'
-        edit_csv(raw_csv, edited_csv)
+        variable = ['2m_temperature', 'potential_evaporation', 'total_precipitation', 'snow_cover']
+        # area = '25/35/45/43'
+        area = '43/25/35/45'  # N/W/S/E Specify as North/West/South/East in Geographic lat/long degrees. Southern latitudes and Western longitudes must be given as negative numbers.
+        # var = variable[3]
+        for var in variable:
+            in_file = retrieve(var, year, month, day, area)
+            daily_mean = str(year) + '_' + var + '_daily.nc'
+            get_daily_mean(in_file, daily_mean)
+            raw_csv = str(year) + '_' + var + '_daily.csv'
+            val2csv(daily_mean, raw_csv)
+            edited_csv = str(year) + '_' + var + '_daily_final.csv'
+            edit_csv(raw_csv, edited_csv)
         # data2database()
 
-        print("Process starterd at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), year))
-
-        columns = ['var', 'date', 'lat', 'lon', 'temp']
-        df = pd.read_csv(edited_csv, skiprows=1, names=columns)
-        df.loc[df['temp'] == -32767.000, ['temp']] = np.nan
-
-        from sqlalchemy import create_engine
-        from sqlalchemy.sql import select
-
-        engine = create_engine('postgresql://postgres:postgres@localhost:5432/postgres')
-        from sqlalchemy.types import String
-
-        result = engine.execute('SELECT lat,lon,index FROM '
-                                '"cindex"')
-        res = result.fetchall()
-        col = ['lat', 'lon', 'index']
-        df_l = pd.DataFrame(res, columns=col)
-
-        new_df = pd.merge(df, df_l, how='left', left_on=['lat', 'lon'], right_on=['lat', 'lon'])
-        new_df.drop(['var', 'lat', 'lon'], axis=1, inplace=True)
-        new_df.to_sql('daily', engine, if_exists='append', index=False,
-                  dtype={"date": String(), "temp": String(),"index":String()})
-        print("Process ended at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), year))
+        # print("Process starterd at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), year))
+        #
+        # columns = ['var', 'date', 'lat', 'lon', 'pre']
+        # df = pd.read_csv(edited_csv, skiprows=1, names=columns)
+        # df.loc[df['pre'] == -32767.000, ['pre']] = np.nan
+        #
+        # from sqlalchemy import create_engine
+        # from sqlalchemy.sql import select
+        #
+        # engine = create_engine('postgresql://postgres:kalmanQs++@185.67.125.34:5999/postgres')
+        # from sqlalchemy.types import String
+        #
+        # result = engine.execute('SELECT lat,lon,index FROM '
+        #                         '"cindex"')
+        # res = result.fetchall()
+        # col = ['lat', 'lon', 'index']
+        # df_l = pd.DataFrame(res, columns=col)
+        #
+        # new_df = pd.merge(df, df_l, how='left', left_on=['lat', 'lon'], right_on=['lat', 'lon'])
+        # new_df.drop(['var', 'lat', 'lon'], axis=1, inplace=True)
+        # new_df.to_sql('pre', engine, if_exists='append', index=False,
+        #           dtype={"date": String(), "pre": String(),"index":String()})
+        # print("Process ended at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), year))
