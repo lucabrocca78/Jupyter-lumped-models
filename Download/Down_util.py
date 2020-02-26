@@ -15,7 +15,7 @@ c = cdsapi.Client()
 
 
 def retrieve(var, year, month, day, area):
-    out_file = str(year) + '_' + var + '.nc'
+    out_file = str(year[0]) + '_' + str(year[-1])+ '_'  + var + '.nc'
     c.retrieve(
         'reanalysis-era5-land',
         {
@@ -102,11 +102,12 @@ if __name__ == '__main__':
     month = list(range(1, 13))
     # day = list(range(1, 2))
     # month = list(range(1, 2))
-    years = list(range(2008, 2020))
     variable = ['2m_temperature', 'potential_evaporation', 'total_precipitation', 'snow_cover']
     in_ = input('data 2 get')
     var = variable[int(in_)]
     print("Getting {}".format(var))
+
+    years = [list(range(2008, 2014)), list(range(2014, 2020))]
     for year in years:
         # year = 2019
 
