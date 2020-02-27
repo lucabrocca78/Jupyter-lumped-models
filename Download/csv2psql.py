@@ -12,6 +12,7 @@ path = pathlib.Path().absolute()
 
 # 'CAK', 'HSAF', 'WR'
 PC = 'HSAF'
+# PC = 'CAK'
 
 with open(r'server.yaml') as file:
     server_list = yaml.load(file, Loader=yaml.FullLoader)
@@ -32,12 +33,13 @@ os.chdir(os.path.join(path, 'Downloaded_data'))
 variable = ['2m_temperature', 'potential_evaporation', 'total_precipitation', 'snow_cover']
 tables = ['temperature', 'pot', 'pre', 'snow']
 
-for var in variable:
+for count, var in enumerate(variable):
     print('Variable : {}'.format(var))
     files = glob.glob('*' + var + '*_final*.csv')
+    table = tables[count]
     for i, f in enumerate(files):
         print("Process starterd at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), f))
-        table = tables[i]
+
         columns = ['var', 'date', 'lon', 'lat', table]
         df = pd.read_csv(f, skiprows=1, names=columns)
         df.loc[df[table] == -32767.000, [table]] = np.nan
