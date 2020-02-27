@@ -15,7 +15,7 @@ c = cdsapi.Client()
 
 
 def retrieve(var, year, month, day, area):
-    out_file = str(year[0]) + '_' + str(year[-1])+ '_'  + var + '.nc'
+    out_file = str(year[0]) + '_' + str(year[-1]) + '_' + var + '.nc'
     c.retrieve(
         'reanalysis-era5-land',
         {
@@ -108,6 +108,7 @@ if __name__ == '__main__':
     print("Getting {}".format(var))
 
     years = [list(range(2008, 2014)), list(range(2014, 2020))]
+    # years = years[1]
     for year in years:
         # year = 2019
 
@@ -117,15 +118,16 @@ if __name__ == '__main__':
         # var = variable[3]
 
         in_file = retrieve(var, year, month, day, area)
-        daily_mean = str(year) + '_' + var + '_daily.nc'
+        daily_mean = str(year[0]) + '_' + str(year[-1]) + '_' + var + '_daily.nc'
         if var == 'potential_evaporation' or var == 'total_precipitation':
             get_daily_sum(in_file, daily_mean)
         else:
             get_daily_mean(in_file, daily_mean)
-        raw_csv = str(year) + '_' + var + '_daily.csv'
+        raw_csv = str(year[0]) + '_' + str(year[-1]) + '_' + var + '_daily.csv'
         val2csv(daily_mean, raw_csv)
-        edited_csv = str(year) + '_' + var + '_daily_final.csv'
+        edited_csv = str(year[0]) + '_' + str(year[-1]) + '_' + var + '_daily_final.csv'
         edit_csv(raw_csv, edited_csv)
+        exit()
         # data2database()
 
         # print("Process starterd at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), year))
