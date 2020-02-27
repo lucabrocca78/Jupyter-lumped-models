@@ -139,7 +139,7 @@ if __name__ == '__main__':
         # from sqlalchemy import create_engine
         # from sqlalchemy.sql import select
         #
-        # engine = create_engine('postgresql://postgres:kalmanQs++@185.67.125.34:5999/postgres')
+        # engine = create_engine('postgresql://:kalmanQs++@185.67.125.34:5999/postgres')
         # from sqlalchemy.types import String
         #
         # result = engine.execute('SELECT lat,lon,index FROM '
