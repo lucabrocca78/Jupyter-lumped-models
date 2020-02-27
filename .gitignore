@@ -52,3 +52,5 @@ SM2RAIN.ipynb
 /Download/Downloaded_data/*
 /Download/Downloaded_data
 .~lock.grid.csv#
+*.yaml
+/Download/server.yaml
