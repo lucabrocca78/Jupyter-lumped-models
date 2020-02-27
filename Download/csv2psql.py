@@ -11,7 +11,7 @@ import yaml
 path = pathlib.Path().absolute()
 
 # 'CAK', 'HSAF', 'WR'
-PC = 'CAK'
+PC = 'HSAF'
 
 with open(r'server.yaml') as file:
     server_list = yaml.load(file, Loader=yaml.FullLoader)
@@ -34,7 +34,7 @@ tables = ['temperature', 'pot', 'pre', 'snow']
 
 for var in variable:
     print('Variable : {}'.format(var))
-    files = glob.glob('*' + var + '*_final.csv')
+    files = glob.glob('*' + var + '*_final*.csv')
     for i, f in enumerate(files):
         print("Process starterd at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), f))
         table = tables[i]
