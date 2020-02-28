@@ -45,7 +45,6 @@ netcdf.py
 SM2RAIN.ipynb
 /Data/netcdf/*
 /Data/*
-/Notebook/*
 .RData
 .Rhistory
 .vscode
