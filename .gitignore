@@ -44,7 +44,11 @@ netcdf.py
 /venv
 SM2RAIN.ipynb
 /Data/netcdf/*
+<<<<<<< HEAD
 /Data/*
+=======
+/Notebook/*
+>>>>>>> master
 .RData
 .Rhistory
 .vscode
