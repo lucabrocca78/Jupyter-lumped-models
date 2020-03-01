@@ -40,7 +40,7 @@ for file in files:
         data.to_csv(str(j) +  '_hsaf.csv')
         li_values = []
         j += 1
-    i += 0
+    i += 1
 data = pd.DataFrame(li_values, columns=['index', 'date', 'value'])
 data.to_csv('hsaf.csv')
 import csv
