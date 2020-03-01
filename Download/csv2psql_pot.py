@@ -28,13 +28,13 @@ else:
 
 print('Server started at {} '.format(server))
 
-os.chdir(os.path.join(path, 'Downloaded_data','pre','CSV'))
+os.chdir(os.path.join(path, 'Downloaded_data','pot','CSV'))
 
 variable = ['2m_temperature', 'potential_evaporation', 'total_precipitation', 'snow_cover']
 tables = ['temperature', 'pot', 'pre', 'snow']
 
-variable = ['total_precipitation']
-tables = ['pre']
+variable = ['potential_evaporation']
+tables = ['pot']
 
 
 for count, var in enumerate(variable):
