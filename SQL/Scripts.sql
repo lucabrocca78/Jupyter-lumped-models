@@ -205,12 +205,23 @@ order by area desc;
 
 WITH xy AS(SELECT i."index" 
 FROM "cindex" i
-WHERE ST_Contains((select t.geom from "Test" t where t.layer = 'Cakit'),i.geom) ) 
+WHERE ST_Contains((select t.geom from "Test" t where t.layer = 'Darbogaz'),i.geom) ) 
 select temperature."date", avg(temperature.temperature) - 273 as temp
 from temperature
 join xy on xy.index = temperature."index"
 where temperature."date" between '2016-10-09' and '2019-09-30'
 group by temperature."date"
 order by temperature."date";
+
+WITH xy AS(SELECT i."index" 
+FROM "cindex" i
+WHERE ST_Contains((select t.geom from "Test" t where t.layer = 'Cakit'),i.geom) ) 
+select pot."date", avg(pot.pot)*-1
+from pot
+join xy on xy.index = pot."index"
+where pot."date" between '2016-10-09' and '2019-09-30'
+group by pot."date"
+order by pot."date";
+
 
 
