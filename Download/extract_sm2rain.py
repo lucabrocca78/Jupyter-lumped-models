@@ -3,7 +3,7 @@ import os, glob
 import pathlib
 import pandas as pd
 
-tif_folder = '/home/cak/Desktop/HSAF'
+tif_folder = '/media/cak/D/Datasets/SM2RAIN/SM2RAIN_Data'
 os.chdir(tif_folder)
 files = glob.glob('*.tif')
 # shp_filename = ('/home/cak')
@@ -13,8 +13,8 @@ n = len(files)
 i = 1
 j = 1
 for file in files:
-    name = file.split('.tif')[0][4:12]
-    name = name[0:4] + '-' + name[4:6] + '-' + name[6:8]
+    name = file.split('.tif')[0][15:25]
+    # name = name[0:4] + '-' + name[4:6] + '-' + name[6:8]
     src_ds = gdal.Open(files[0])
     gt = src_ds.GetGeoTransform()
     rb = src_ds.GetRasterBand(1)

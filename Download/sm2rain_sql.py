@@ -40,9 +40,9 @@ for count, var in enumerate(variable):
     for i, f in enumerate(files):
         print("Process starterd at {} for year : {}".format(datetime.datetime.now().strftime('%H:%M:%S'), f))
 
-        columns = ['var', 'index', 'date', 'value']
+        columns = ['var', 'index', 'date', 'pre']
         df = pd.read_csv(f, skiprows=1, names=columns)
-        df.loc[df['value'] == -2147483647, ['value']] = np.nan
+        df.loc[df['pre'] == -2147483647, ['pre']] = np.nan
 
         engine = create_engine('postgresql://' + username + ':' + password + '@' + server + ':5999/postgres')
 
