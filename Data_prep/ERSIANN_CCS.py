@@ -16,12 +16,12 @@ for lat_ in lat:
     for lon_ in lon:
         grid.append([lat_, lon_, i])
         i += 1
-files = glob.glob1(path, '*.nc')
+files = glob.glob1(os.path.join(path,'Data'), '*.nc')
 
 for file in files:
     print(file)
     name = file[-7:][:4]
-    d = xr.open_dataset(os.path.join(path, file))
+    d = xr.open_dataset(os.path.join(path,'Data', file))
     d.precip.to_dataframe().to_csv(os.path.join(path, 'CSV', '{}.csv'.format(name)))
 
     columns = ['date', 'lat', 'lon', 'pre']
