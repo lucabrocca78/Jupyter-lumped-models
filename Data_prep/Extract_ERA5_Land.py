@@ -10,9 +10,13 @@ import cartopy.crs as ccrs
 
 from osgeo import gdal, ogr
 
+var = 'pre'
+
 file = '/home/cak/Desktop/Sentinel/test/SD_20190101.nc'
 file = '/media/D/Datasets/PERSIANN_CCS/Data/CCS_Turkey_2020-03-07122131pm_2018.nc'
-file = '/media/D/Datasets/PERSIANN_CCS/Data/pre.nc'
+
+file = '/media/D/Datasets/ERA5_Land/Temp/Temp_daily.nc'
+file = '/media/D/Datasets/ERA5_Land/pre/pre_daily.nc'
 shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
@@ -28,14 +32,17 @@ nuts_mask_poly = regionmask.Regions(name='nuts_mask', numbers=list(range(0, num)
 # nuts_mask_poly = regionmask.Regions_cls(name = 'nuts_mask', numbers = list(range(0,37)), names = list(nuts.NUTS_ID), abbrevs = list(nuts.NUTS_ID), outlines = list(nuts.geometry.values[i] for i in range(0,37)))
 print(nuts_mask_poly)
 
-mask = nuts_mask_poly.mask(d)
+mask = nuts_mask_poly.mask(d.isel(time=0).sel(latitude=slice(43, 35), longitude=slice(25, 45)), lat_name='latitude',
+                           lon_name='longitude')
 
 proj = ccrs.EqualEarth(central_longitude=0)
 ax = plt.subplot(111, projection=proj)
-d.isel(datetime=1).precip.plot.pcolormesh(ax=ax, transform=ccrs.PlateCarree())
+if var == 'pre':
+    d.isel(time=1).tp.plot.pcolormesh(ax=ax, transform=ccrs.PlateCarree())
+else:
+    d.isel(time=1).t2m.plot.pcolormesh(ax=ax, transform=ccrs.PlateCarree())
 ax.coastlines()
 plt.show()
-
 
 plt.figure(figsize=(12, 8))
 ax = plt.axes()
@@ -43,8 +50,8 @@ mask.plot(ax=ax)
 nuts.plot(ax=ax, alpha=0.8, facecolor='none', lw=1)
 plt.show()
 
-lat = mask.lat.values
-lon = mask.lon.values
+lat = mask.latitude.values
+lon = mask.longitude.values
 
 ID_REGION = 1
 # print(nuts.NUTS_ID[ID_REGION])
@@ -55,30 +62,35 @@ sel_mask = mask.where(mask == ID_REGION).values
 id_lon = lon[np.where(~np.all(np.isnan(sel_mask), axis=0))]
 id_lat = lat[np.where(~np.all(np.isnan(sel_mask), axis=1))]
 
-out_sel = d.sel(lat=slice(id_lat[0], id_lat[-1]), lon=slice(id_lon[0], id_lon[-1])).compute().where(
+out_sel = d.sel(latitude=slice(id_lat[0], id_lat[-1]), longitude=slice(id_lon[0], id_lon[-1])).compute().where(
     mask == ID_REGION)
 
+daily = out_sel.mean(dim=('latitude', 'longitude'))
 
-daily = out_sel.mean(dim=('lat', 'lon'))
+if var == 'pre':
+    df = daily.tp.to_dataframe()
+    df['tp'] = df['tp'] * 1e3
+    daily.tp.plot()
+else:
+    df = daily.t2m.to_dataframe()
+    df['t2m'] = df['t2m'] - 273
+    daily.tp.plot()
+plt.show()
 
-
-df = daily.precip.to_dataframe()
 Cakit = pd.read_csv('../Data/Measurements/Cakit.csv', index_col='Date')
 df.index = df.index.strftime('%m/%d/%Y')
-df.loc[(df.precip < 0),'precip']= 0
-df.plot()
-plt.show()
 
 df3 = pd.merge(Cakit, df, left_index=True, right_index=True)
 df3.index.name = 'Date'
 
-df3.plot.bar(y=['P', 'precip'])
+if var == 'pre':
+    df3.plot.bar(y=['P', 'tp'])
+    df3.plot(y=['P', 'tp'])
+else:
+    df3.plot(y=['Temp', 't2m'])
 plt.show()
-
-# df.to_csv('Cakit.csv')
-
 plt.figure(figsize=(12, 8))
 ax = plt.axes()
-out_sel.precip.isel(datetime=0).plot(ax=ax)
+out_sel.tp.isel(time=0).plot(ax=ax)
 nuts.plot(ax=ax, alpha=0.8, facecolor='none')
 plt.show()
