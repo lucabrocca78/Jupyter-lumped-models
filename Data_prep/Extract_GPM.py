@@ -17,7 +17,8 @@ file = '/media/D/Datasets/PERSIANN_CCS/Data/CCS_Turkey_2020-03-07122131pm_2018.n
 
 file = '/media/D/Datasets/ERA5_Land/Temp/Temp_daily.nc'
 file = '/media/D/Datasets/ERA5_Land/pre/pre_daily.nc'
-file = '/media/D/Datasets/GPM/3B-DAY.MS.MRG.3IMERG.20190101-S000000-E235959.V06.nc4'
+file = '/media/D/Datasets/GPM/pre_daily_tr.nc'
+file = '/media/D/Datasets/GPM/daily.nc'
 shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
@@ -69,8 +70,8 @@ out_sel = d.sel(lat=slice(id_lat[0], id_lat[-1]), lon=slice(id_lon[0], id_lon[-1
 daily = out_sel.mean(dim=('lat', 'lon'))
 
 if var == 'pre':
-    df = daily.HQprecipitation.to_dataframe()
-    daily.HQprecipitation.plot()
+    df = daily.precipitationCal.to_dataframe()
+    daily.precipitationCal.plot()
 else:
     df = daily.t2m.to_dataframe()
     df['t2m'] = df['t2m'] - 273
@@ -84,13 +85,13 @@ df3 = pd.merge(Cakit, df, left_index=True, right_index=True)
 df3.index.name = 'Date'
 
 if var == 'pre':
-    df3.plot.bar(y=['P', 'tp'])
-    df3.plot(y=['P', 'tp'])
+    df3.plot.bar(y=['P', 'precipitationCal'])
+    df3.plot(y=['P', 'precipitationCal'])
 else:
     df3.plot(y=['Temp', 't2m'])
 plt.show()
 plt.figure(figsize=(12, 8))
 ax = plt.axes()
-out_sel.tp.isel(time=0).plot(ax=ax)
+out_sel.precipitationCal.isel(time=0).plot(ax=ax)
 nuts.plot(ax=ax, alpha=0.8, facecolor='none')
 plt.show()
