@@ -18,7 +18,7 @@ file = '/media/D/Datasets/PERSIANN_CCS/Data/CCS_Turkey_2020-03-07122131pm_2018.n
 file = '/media/D/Datasets/ERA5_Land/Temp/Temp_daily.nc'
 file = '/media/D/Datasets/ERA5_Land/pre/pre_daily.nc'
 file = '/media/D/Datasets/GPM/pre_daily_tr.nc'
-file = '/media/D/Datasets/GPM/daily.nc'
+file = '/media/D/Datasets/GPM/2015_2019_daily.nc'
 shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
