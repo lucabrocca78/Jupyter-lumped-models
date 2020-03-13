@@ -70,7 +70,16 @@ cdo settaxis,1961-01-01,12:00:00,1day infile outfile
 
 25,45,35,43
 sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,precipitation 3B42RT_Daily.20190115.7.nc4 pl.png
+sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,swe 20190101_SWE.nc SWE.png
+sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,sce500 20190101_SC_cliped.nc SC.png
+sudo cdo grfill,device="png" -selvar,sce500 20190101_SC_cliped.nc SC.png
+
+
 
 sudo cdo grfill,device="GIF_ANIMATION",min=2 -selvar,precipitation 2019_pre_TR.nc pl.gif
 
 cdo -map -invertlat -topo,r360x90
+
+
+wgrib2 h05B_20190601_0000_03_fdk.grb -csv out.txt
+awk '{FS = ","}; { print $5, $6, $7}' out.txt > gmt.txt
