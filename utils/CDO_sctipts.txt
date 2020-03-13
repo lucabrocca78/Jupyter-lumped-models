@@ -1,0 +1,76 @@
+cdo griddes CCS_Turkey_2020-03-07083347am_2015.nc > grid.txt
+cdo setgrid,grid.txt CCS_Turkey_2020-03-07083347am_2015.nc out.nc
+cdo outputtab,name,date,lon,lat,value out.nc > 2020.csv
+
+
+
+ncatted -O -a units,lon,c,c,"degrees_east" -a units,lat,c,c,"degrees_north" CCS_Turkey_2020-03-07083347am_2016.nc
+
+python -m pudb.run Merge_paralell.py
+
+
+ncatted -a coordinates,sst,c,c,"nav_lon nav_lat" sst_data.nc
+ncatted -a coordinates,Rainfall,c,c,"Latitude Longitute" RSM2RAIN_ASCAT_0125_2018_v1.1.nc
+ncatted -O -a axis,Latitude,c,c,"Y" -a axis,Longitude,c,c,"X" 
+
+
+wget --user=dramoreyy --password=1549682Qs -i links.txt
+
+
+cdo -sub -dayavg ifile2 -timavg ifile1 ofile
+
+
+cdo mergetime
+
+for file 
+
+precipitationCal
+
+cdo -select,name=precipitationCal -mergetime *nc4 merged.nc
+
+
+cdo sellonlatbox,25,45,35,43 pre_daily.nc daily.nc
+
+for file in  *nc4; do cdo shaded,device=png -chname,topo,$file $file plot_$file; done
+
+for file in  *nc4; do cdo sellonlatbox,25,45,35,43 $file clipped_$file ; done
+for file in  *nc; do cdo sellonlatbox,25,45,35,43 $file clipped_$file ; done
+
+cdo -select,name=precipitationCal -mergetime clipped_*nc4 2008_merged_daily.nc
+cdo -select,name=precipitationCal -mergetime clipped_*nc4 2015_merged_daily.nc
+cdo -select,name=precipitationCal -mergetime clipped_*nc4 2016_merged_daily.nc
+cdo -select,name=precipitationCal -mergetime clipped_*nc4 2017_merged_daily.nc
+cdo -select,name=precipitationCal -mergetime clipped_*nc4 2017_merged_daily.nc
+cdo -select,name=precipitationCal -mergetime clipped_*nc4 2019_merged_daily.nc
+cdo -select,name=precipitation -mergetime clipped_*nc4 2019_merged_daily.nc
+
+
+
+cdo -R remapcon,r3712x3712 -setgridtype,regular 
+
+./configure --prefix=/usr/lib/gribapi
+cmake  ../grib_api-1.28.0-Source -DCMAKE_INSTALL_PREFIX=/usr/lib/gribapi
+
+cmake -G "Unix Makefiles" -H$SOURCE_DIR -B$BUILD_DIR -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR $OPTIONS
+
+
+curl ftp://ftp.com/mp3/* --user login:password -o /myfolder/
+
+
+/home/glbland_ftp/Core/CRYOSPHERE/dataset-fmi-swe-nh-5km
+
+ftp://ftp.globalland.cls.fr/Core/CRYOSPHERE/dataset-fmi-swe-nh-5km/c_gls_SWE5K_200601040000_NHEMI_SSMIS_V1.0.2.nc
+
+curl ftp://ftp.globalland.cls.fr/Core/CRYOSPHERE/dataset-fmi-swe-nh-5km/c_gls_SWE5K_200601040000_NHEMI_SSMIS_V1.0.2.nc --user ckaraman:1549682Qs+ -o /home/cak/Desktop
+
+ftp ftp.globalland.cls.fr
+
+
+cdo settaxis,1961-01-01,12:00:00,1day infile outfile
+
+25,45,35,43
+sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,precipitation 3B42RT_Daily.20190115.7.nc4 pl.png
+
+sudo cdo grfill,device="GIF_ANIMATION",min=2 -selvar,precipitation 2019_pre_TR.nc pl.gif
+
+cdo -map -invertlat -topo,r360x90
