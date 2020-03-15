@@ -5,6 +5,9 @@ from ftplib import FTP
 import datetime
 # Reprojection
 import pandas as pd
+from geopandas import GeoDataFrame
+from shapely.geometry import Point
+import fiona
 
 os.chdir('/home/cak/Desktop/H05B')
 
@@ -81,25 +84,40 @@ username = 'cagri.karaman@hidrosaf.com'
 password = 'kalman01'
 product = 'h05B'
 indate = '2020-01-09'
-outdate = '2020-01-19'
-# download(username, password, str(product), str(indate).replace('-', ''), str(outdate).replace('-', ''))
+outdate = '2020-03-15'
+download(username, password, str(product), str(indate).replace('-', ''), str(outdate).replace('-', ''))
 
 files = glob.glob1('./' + product + '_data', '*.grb')
-file = files[0]
-name = file[5:9] + '-' + file[9:11] + '-' + file[11:13]
-
 os.chdir(os.path.join(os.getcwd(), product + '_data'))
-# os.system('wgrib2 {} -csv out.csv'.format(file))
-# code = """awk '{FS = ","}; { print $5, $6, $7}' out.csv > out.csv_new"""
-# os.system(code)
-df = pd.read_csv('out.csv', names=['Date', 'Date1', 'Var', 'lon', 'lat', 'value'])
-df.reset_index(drop=True, inplace=True)
-df_new = df[['lon', 'lat', 'value']]
-indexNames = df_new[
-    (df_new['lat'] < -500) | (df_new['lat'] > 500) | (df_new['lon'] < -500) | (df_new['lon'] > 500)].index
-df_new.drop(indexNames, inplace=True)
-df_new.to_csv('grid.csv', index=False)
-code = """gdal_grid -zfield value -l grid grid.vrt {}_h05b.tif""".format(name)
-os.system(code)
-os.remove('grid.csv')
-os.remove('out.csv')
+
+for file in files:
+    name = file[5:9] + '-' + file[9:11] + '-' + file[11:13]
+    print(name)
+    # os.chdir(os.path.join(os.getcwd(), 'test'))
+    os.system("""cdo select,code=-1 {} temp.grb""".format(file))
+    os.system('wgrib2 temp.grb -csv out.csv')
+    # code = """awk '{FS = ","}; { print $5, $6, $7}' out.csv > out.csv_new"""
+    # os.system(code)
+    df = pd.read_csv('out.csv', names=['Date', 'Date1', 'Var', 'lon', 'lat', 'value'])
+    df.reset_index(drop=True, inplace=True)
+    df_new = df[['lon', 'lat', 'value']]
+    indexNames = df_new[
+        (df_new['lat'] < -500) | (df_new['lat'] > 500) | (df_new['lon'] < -500) | (df_new['lon'] > 500)].index
+    df_new.drop(indexNames, inplace=True)
+
+    data_TR = df_new[
+        (df_new['lat'] < 43) & (df_new['lat'] > 35) & (df_new['lon'] < 45) & (df_new['lon'] > 25)]
+
+    # data_TR.to_csv('grid.csv', index=False)
+    # code = """gdal_grid -zfield value -l grid grid.vrt {}_h05b.tif""".format(name)""""""
+    # os.system(code)
+    # os.remove('grid.csv')
+    # os.remove('out.csv')
+
+    geometry = [Point(xy) for xy in zip(data_TR.lon, data_TR.lat)]
+    crs = {'init': 'epsg:4326'}
+    geo_df = GeoDataFrame(data_TR, crs=crs, geometry=geometry)
+    filename = name + '.shp'
+    geo_df.to_file(driver='ESRI Shapefile', filename='../shp/{}'.format(filename))
+    os.remove('out.csv')
+    os.remove('temp.grb')

@@ -74,12 +74,18 @@ sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -
 sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,sce500 20190101_SC_cliped.nc SC.png
 sudo cdo grfill,device="png" -selvar,sce500 20190101_SC_cliped.nc SC.png
 
-
-
 sudo cdo grfill,device="GIF_ANIMATION",min=2 -selvar,precipitation 2019_pre_TR.nc pl.gif
 
 cdo -map -invertlat -topo,r360x90
 
+wgrib2 h05B_20190601_0000_24_fdk.grb -csv out.txt
 
-wgrib2 h05B_20190601_0000_03_fdk.grb -csv out.txt
 awk '{FS = ","}; { print $5, $6, $7}' out.txt > gmt.txt
+
+gdal_grid -zfield value -l grid grid.vrt {}_h05b.tif
+
+gdal_grid -zfield value -a invdist:power=2.0:smoothing=1.0 -txe -60 60 -tye -60 60 -outsize 3712 3712 -of GTiff -ot Float64 -l grid grid.vrt grid1.tiffgdal_grid -zfield value -a invdist:power=2.0:smoothing=1.0 -txe -60 60 -tye -60 60 -outsize 3712 3712 -of GTiff -ot Float64 -l grid grid.vrt grid1.tiff
+gdal_grid -zfield value -a invdist:power=2.0:smoothing=1.0 3712 3712 -of GTiff -ot Float64 -l grid grid.vrt grid1.tiffgdal_grid -zfield value -a invdist:power=2.0:smoothing=1.0 -txe -60 60 -tye -60 60 -outsize 3712 3712 -of GTiff -ot Float64 -l grid grid.vrt grid1.tiff
+gdal_rasterize -l grid -a value -ts 0.1 0.1 -a_nodata -9999 -te 25.0001 35.0002 44.9996 42.9998 -ot Float32 -of GTiff /home/cak/Desktop/H05B/shp/grid.shp /home/cak/Desktop/H05B/h05B_data/raster.tif
+
+gdal_rasterize -l grid -a value -tr 0.04 0.04 -a_nodata -9999 -te 25.0001 35.0002 44.9996 42.9998 -ot Float32 -of GTiff /home/cak/Desktop/H05B/test/grid.shp /home/cak/Desktop/H05B/test/raster2.tiff
