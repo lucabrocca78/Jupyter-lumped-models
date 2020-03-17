@@ -72,20 +72,25 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
     return df
 
 
-df_Agro = extract_ts(file, shp, var[0])
-df_Era5 = extract_ts(file1, shp, var[1])
+# df_Agro = extract_ts(file, shp, var[0])
+# df_Era5 = extract_ts(file1, shp, var[1])
 
-df_Agro_p = extract_ts(file, shp, var[0], type='point', lon=34.75, lat=37.51)
-df_Era5_p = extract_ts(file1, shp, var[1], type='point', lon=34.75, lat=37.51)
+lat = 41.001
+lon = 28.9431
+
+df_Agro_p = extract_ts(file, shp, var[0], type='point', lon=lon, lat=lat)
+df_Era5_p = extract_ts(file1, shp, var[1], type='point', lon=lon, lat=lat)
 
 Cakit = pd.read_csv('../Data/Measurements/Cakit.csv', index_col='Date')
+Cakit = pd.read_csv('../Data/Measurements/18567_Data.csv', index_col='Date')
+Cakit = pd.read_csv('../Data/Measurements/Aksaray.csv', index_col='Date')
 
 temp = pd.merge(Cakit, df_Agro_p, left_index=True, right_index=True)
 df3 = pd.merge(temp, df_Era5_p, left_index=True, right_index=True)
 
 df3.index.name = 'Date'
-
-df3.plot(y=['Temp', 'Agro_Temperature_Air_2m_Mean_24h', 'Era5_t2m'])
+df3.to_csv('test_temp.csv')
+df3.plot(y=['Aksaray', 'Agro_Temperature_Air_2m_Mean_24h', 'Era5_t2m'])
 plt.show()
 # plt.figure(figsize=(12, 8))
 # ax = plt.axes()
