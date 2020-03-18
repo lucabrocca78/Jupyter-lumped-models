@@ -27,6 +27,10 @@ files = glob.glob('*.nc')
 def extract_ts(file, shp, var, type='area', lat=34, lon=34):
     d = xr.open_dataset(file)
     name = file.split('_')[0]
+
+    # if name in ['TRMM']:
+    #     d = d.transpose('time','latitude', 'longitude')
+
     print(name)
     if type == 'area':
         nuts = gpd.read_file(shp)
@@ -36,7 +40,7 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
                                             outlines=list(nuts.geometry.values[i] for i in range(0, num)))
         print(nuts_mask_poly)
 
-        if name != 'sm2rain':
+        if name not in ['sm2rain', 'GPM', 'TRMM', 'TRMMRT']:
             mask = nuts_mask_poly.mask(d.isel(time=0).sel(latitude=slice(43, 35), longitude=slice(25, 45)),
                                        lat_name='latitude',
                                        lon_name='longitude')
@@ -48,13 +52,13 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
         lat = mask.latitude.values
         lon = mask.longitude.values
 
-        # proj = ccrs.EqualEarth(central_longitude=0)
-        # ax = plt.subplot(111, projection=proj)
-        # d.isel(time=0).tp.plot.pcolormesh(ax=ax, transform=ccrs.PlateCarree())
-        # ax.coastlines()
-        # plt.show()
+        proj = ccrs.EqualEarth(central_longitude=0)
+        ax = plt.subplot(111, projection=proj)
+        d.isel(time=0).tp.plot.pcolormesh(ax=ax, transform=ccrs.PlateCarree())
+        ax.coastlines()
+        plt.show()
 
-        ID_REGION = 1
+        ID_REGION = 0
         # print(nuts.NUTS_ID[ID_REGION])
         print(nuts.ID[ID_REGION])
 
@@ -63,26 +67,41 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
         id_lon = lon[np.where(~np.all(np.isnan(sel_mask), axis=0))]
         id_lat = lat[np.where(~np.all(np.isnan(sel_mask), axis=1))]
 
-        out_sel = d.sel(latitude=slice(id_lat[0], id_lat[-1]), longitude=slice(id_lon[0], id_lon[-1])).compute().where(
-            mask == ID_REGION)
-        daily = out_sel.mean(dim=('latitude', 'longitude'))
-
+        try:
+            out_sel = d.sel(latitude=slice(id_lat[0], id_lat[-1]),
+                            longitude=slice(id_lon[0], id_lon[-1])).compute().where(
+                mask == ID_REGION)
+            daily = out_sel.mean(dim=('latitude', 'longitude'), skipna=True)
+        except:
+            daily = d.mean(dim=('latitude', 'longitude'), skipna=True)
+            daily['tp'] = 0
     else:
         daily = d.sel(longitude=lon, latitude=lat, method='nearest')
 
     for key in daily.keys():
         daily = daily.rename({key: name + '_' + key})
     df = daily.to_dataframe()
+    if name == 'Era5':
+        df['Era5_tp'] = df['Era5_tp'] * 1e3
 
-    if name == 'sm2rain':
+    if name == 'PERSIANN':
+        df = df.drop(['PERSIANN_crs'], axis=1)
+        df.loc[(df.PERSIANN_tp < 0), 'PERSIANN_tp'] = 0
+
+    if name in ['sm2rain', 'TRMM', 'TRMMRT']:
         df.index = df.index.astype(int)
         df.index = pd.to_datetime(df.index.astype(str))
     df.index = df.index.strftime('%m/%d/%Y')
 
     return df
 
+
 variables = locals()
 for file in files:
     name = file.split('_')[0]
     variables["df_{0}".format(name)] = extract_ts(file, shp, var, type='area')
+
+df = pd.concat([df_TRMMRT, df_TRMM, df_sm2rain, df_Era5, df_GPM, df_PERSIANN], axis=1)
+df.plot()
+plt.show()
 print("a")
