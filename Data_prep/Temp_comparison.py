@@ -8,10 +8,10 @@ import geopandas as gpd
 import regionmask
 import cartopy.crs as ccrs
 from osgeo import gdal, ogr
+import sqlite3
 
-file = '/media/D/Datasets/Temperature/Agro_temp.nc'
+file = '/media/D/Datasets/Temperature/Agro_temp_mean.nc'
 file1 = '/media/D/Datasets/Temperature/Era5_land_temp.nc'
-file2 = '/home/cak/Desktop/tas/tas_decreg_europe_v20140120_20010101_20010131.nc'
 shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
@@ -75,8 +75,7 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
 
 # df_Agro = extract_ts(file, shp, var[0])
 # df_Era5 = extract_ts(file1, shp, var[1])
-tas = extract_ts(file2, shp, var[1])
-
+#
 # lat = 41.001
 # lon = 28.9431
 #
@@ -94,8 +93,35 @@ tas = extract_ts(file2, shp, var[1])
 # df3.to_csv('test_temp.csv')
 # df3.plot(y=['Aksaray', 'Agro_Temperature_Air_2m_Mean_24h', 'Era5_t2m'])
 # plt.show()
-# # plt.figure(figsize=(12, 8))
+# plt.figure(figsize=(12, 8))
 # ax = plt.axes()
 # out_sel.tp.isel(time=0).plot(ax=ax)
 # nuts.plot(ax=ax, alpha=0.8, facecolor='none')
 # plt.show()
+
+
+conn = sqlite3.connect('/media/D/Datasets/Temperature/temp_db/data.sqlite')
+cur = conn.cursor()
+
+stationid = 18484
+query = """SELECT  DISTINCT stations.lat,stations.lon  FROM  "Data" d join stations  on d.stationid  = stations.Station where d.stationid  = {} """.format(
+    stationid)
+cur.execute(query)
+records = cur.fetchall()
+
+df_Era5_p = extract_ts(file1, shp, var[1], type='point', lon=records[0][1], lat=records[0][0])
+df_Agro_p = extract_ts(file, shp, var[0], type='point', lon=records[0][1], lat=records[0][0])
+
+query = """SELECT  d.date ,d."temp" FROM  "Data" d  WHERE d.stationid  = {} ORDER  by date ;""".format(stationid)
+cur.execute(query)
+records = cur.fetchall()
+measure = pd.DataFrame(records, columns=['time', 'Measurement'])
+measure = measure.set_index('time')
+measure.index = pd.to_datetime(measure.index, format = '%Y-%m-%d')
+measure.index = measure.index.strftime('%m/%d/%Y')
+
+
+
+df = measure.join([df_Era5_p, df_Agro_p])
+df[['Measurement', 'Era5_t2m', 'Agro_Temperature_Air_2m_Mean_24h']].plot()
+plt.show()
