@@ -14,11 +14,13 @@ file1 = '/media/D/Datasets/Temperature/Era5_land_temp.nc'
 shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
-var = ['Agro', 'Era5']
 
-folder = '/media/D/Datasets/Precipitation/att_fixed'
+folder = '/media/D/Datasets/PET'
+file = '/media/D/Datasets/PET/ERA5_land_pet.nc'
 os.chdir(folder)
 files = glob.glob('*.nc')
+
+var = 'pot'
 
 
 # for file in files:
@@ -26,8 +28,7 @@ files = glob.glob('*.nc')
 
 def extract_ts(file, shp, var, type='area', lat=34, lon=34):
     d = xr.open_dataset(file)
-    name = file.split('_')[0]
-
+    name = 'pet'
     # if name in ['TRMM']:
     #     d = d.transpose('time','latitude', 'longitude')
 
@@ -54,7 +55,7 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
 
         proj = ccrs.EqualEarth(central_longitude=0)
         ax = plt.subplot(111, projection=proj)
-        d.isel(time=0).tp.plot.pcolormesh(ax=ax, transform=ccrs.PlateCarree())
+        d.isel(time=0).pev.plot.pcolormesh(ax=ax, transform=ccrs.PlateCarree())
         ax.coastlines()
         plt.show()
 
@@ -74,7 +75,7 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
             daily = out_sel.mean(dim=('latitude', 'longitude'), skipna=True)
         except:
             daily = d.mean(dim=('latitude', 'longitude'), skipna=True)
-            daily['tp'] = 0
+            daily['pev'] = 0
     else:
         daily = d.sel(longitude=lon, latitude=lat, method='nearest')
 
@@ -97,11 +98,9 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
 
 
 variables = locals()
-for file in files:
-    name = file.split('_')[0]
-    variables["df_{0}".format(name)] = extract_ts(file, shp, var, type='area')
-
-df = pd.concat([df_TRMMRT, df_TRMM, df_sm2rain, df_Era5, df_GPM, df_PERSIANN, df_Chirps], axis=1)
+name = file.split('_')[0]
+df = extract_ts(file, shp, var, type='area')
+df['pet_pev'] = df['pet_pev'] * -1e3
 df.plot()
 plt.show()
 print("a")

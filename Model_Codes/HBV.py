@@ -20,7 +20,9 @@ from __future__ import division, print_function
 import numpy as np
 import scipy.optimize as opt
 from scipy.optimize import minimize
-from . import objectivefunctions as obj
+# from . import objectivefunctions as obj
+import objectivefunctions as obj
+
 # import objectivefunctions as obj
 
 # HBV base model parameters

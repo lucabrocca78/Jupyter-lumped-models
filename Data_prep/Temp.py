@@ -11,7 +11,6 @@ from osgeo import gdal, ogr
 
 file = '/media/D/Datasets/Temperature/Agro_temp.nc'
 file1 = '/media/D/Datasets/Temperature/Era5_land_temp.nc'
-file2 = '/home/cak/Desktop/tas/tas_decreg_europe_v20140120_20010101_20010131.nc'
 shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
@@ -73,17 +72,16 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
     return df
 
 
-# df_Agro = extract_ts(file, shp, var[0])
-# df_Era5 = extract_ts(file1, shp, var[1])
-tas = extract_ts(file2, shp, var[1])
+df_Agro = extract_ts(file, shp, var[0])
+df_Era5 = extract_ts(file1, shp, var[1])
 
-# lat = 41.001
-# lon = 28.9431
+lat = 41.001
+lon = 28.9431
+
+df_Agro_p = extract_ts(file, shp, var[0], type='point', lon=lon, lat=lat)
+df_Era5_p = extract_ts(file1, shp, var[1], type='point', lon=lon, lat=lat)
 #
-# df_Agro_p = extract_ts(file, shp, var[0], type='point', lon=lon, lat=lat)
-# df_Era5_p = extract_ts(file1, shp, var[1], type='point', lon=lon, lat=lat)
-#
-# Cakit = pd.read_csv('../Data/Measurements/Cakit.csv', index_col='Date')
+Cakit = pd.read_csv('../Data/Measurements/Cakit.csv', index_col='Date')
 # Cakit = pd.read_csv('../Data/Measurements/18567_Data.csv', index_col='Date')
 # Cakit = pd.read_csv('../Data/Measurements/Aksaray.csv', index_col='Date')
 #

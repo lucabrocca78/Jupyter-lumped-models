@@ -9,8 +9,11 @@ from matplotlib.offsetbox import AnchoredText
 from scipy import stats
 from scipy.optimize import minimize
 from pyswarm import pso
-from . import HBV as hbv
-from . import objectivefunctions as obj
+# from . import HBV as hbv
+import HBV as hbv
+# from . import objectivefunctions as obj
+import objectivefunctions as obj
+
 #
 # import HBV as hbv
 # import objectivefunctions as obj
@@ -27,7 +30,7 @@ class Hbv(object):
     _data = "Darbogaz.csv"
 
     def __init__(self, area, input_parameters, States, calibration=False, method='PSO', Objective_fun='nse',
-                 maxiter=15,Spinoff = 0):
+                 maxiter=15, Spinoff=0):
         self._working_directory = None
         self.Data_file = None
         self.df = None
@@ -312,8 +315,8 @@ if __name__ == '__main__':
         , 2.32816764e-02, 4.01249854e-01, 0.00000000e+00, 1.25000000e-01
         , 1.19040117e+00, 1.40000000e+00, 6.15462361e+00]
     States = np.array([0, 0, 0.9 * params[1], 0, 0, 0, 0, 0.1])
-    n = Hbv(97.5, params, States, calibration=True, method='PSO', Objective_fun='nse', maxiter=2)
-    n.process_path = '/home/cak/Desktop/jupyter/Notebook/Data'
-    n.Data_file = os.path.join(n.process_path, "Alihoca.csv")
+    n = Hbv(421, params, States, calibration=True, method='PSO', Objective_fun='nse', maxiter=20)
+    n.process_path = '/media/D/Datasets'
+    n.Data_file = os.path.join(n.process_path, "Cakit_model.csv")
     n.run()
     n.draw()

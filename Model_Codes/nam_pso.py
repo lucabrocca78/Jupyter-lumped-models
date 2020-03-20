@@ -1,9 +1,9 @@
 # region modules
 import os
 import matplotlib.pyplot as plt
-from . import nam_fun as nam_f
+import nam_fun as nam_f
 import numpy as np
-from . import objectivefunctions as obj
+import objectivefunctions as obj
 import pandas as pd
 import seaborn
 from matplotlib.gridspec import GridSpec
@@ -23,7 +23,8 @@ class Nam(object):
     _dir = r'D:\DRIVE\TUBITAK\Hydro_Model\Data\Darbogaz'
     _data = "Darbogaz.csv"
 
-    def __init__(self, area, input_parameters,States, calibration=False, method='PSO', Objective_fun='nashsutcliffe',maxiter=15):
+    def __init__(self, area, input_parameters, States, calibration=False, method='PSO', Objective_fun='nashsutcliffe',
+                 maxiter=15):
         self._working_directory = None
         self.Data_file = None
         self.df = None
@@ -95,7 +96,7 @@ class Nam(object):
 
     def Objective(self, x, *args):
         self.Qsim, self.St = nam_f.nam_method(
-            x,self.States, self.P, self.T, self.E, self.area, self.Spinoff, Cal=True)
+            x, self.States, self.P, self.T, self.E, self.area, self.Spinoff, Cal=True)
         # n = math.sqrt((sum((self.Qsim - self.Qobs) ** 2)) / len(self.Qobs))
         # n = self.nash(self.Qobs, self.Qsim)
         # mean_observed = np.nanmean(self.Qobs)
@@ -109,7 +110,7 @@ class Nam(object):
         elif self.Objective_fun == 'kge':
             n = 1 - obj.kge(self.Qobs, self.Qsim)
         elif self.Objective_fun == 'volume':
-            n = obj.volume_error(self.Qobs,self.Qsim)
+            n = obj.volume_error(self.Qobs, self.Qsim)
         elif self.Objective_fun == 'rmse':
             n = obj.rmse(self.Qobs, self.Qsim)
         elif self.Objective_fun == 'r2':
@@ -133,17 +134,17 @@ class Nam(object):
                 args = (self.P, self.T, self.E, self.area, self.Spinoff, self.Qobs)
                 xopt, fopt = pso(self.Objective, lb, ub, f_ieqcons=None, args=args, maxiter=self.maxiter, debug=True)
                 self.Qsim, self.St = nam_f.nam_method(
-                    xopt,self.States, self.P, self.T, self.E, self.area, self.Spinoff, Cal=False)
+                    xopt, self.States, self.P, self.T, self.E, self.area, self.Spinoff, Cal=False)
                 self.parameters = xopt
             else:
                 self.parameters = minimize(self.Objective, self.initial, method='SLSQP', bounds=self.bounds,
                                            options={'maxiter': 1e8, 'disp': False})
                 self.Qsim, self.St = nam_f.nam_method(
-                    self.parameters.x,self.States, self.P, self.T, self.E, self.area, self.Spinoff, Cal=False)
+                    self.parameters.x, self.States, self.P, self.T, self.E, self.area, self.Spinoff, Cal=False)
                 self.parameters = self.parameters.x
         else:
             self.Qsim, self.St = nam_f.nam_method(
-                self.initial,self.States, self.P, self.T, self.E, self.area, self.Spinoff)
+                self.initial, self.States, self.P, self.T, self.E, self.area, self.Spinoff)
             self.parameters = self.initial
 
     def update(self):
@@ -306,8 +307,8 @@ if __name__ == '__main__':
         , 2.43815545e+01, 8.21285865e-01, 1.00000000e-02, 1.00000000e-02
         , 7.37979357e+02, 9.64180895e-01, 2.06295770e+00]
     States = np.array([0, 0, 0.9 * params[1], 0, 0, 0, 0, 0.1])
-    n = Nam(360, params,States, calibration=True, method='PSO', Objective_fun='nse',maxiter=20)
-    n.process_path = r"D:\Hydrology\Code"
-    n.Data_file = os.path.join(n.process_path, "L0123001_2005_2012.csv")
+    n = Nam(421, params, States, calibration=True, method='PSO', Objective_fun='nse', maxiter=20)
+    n.process_path = '/media/D/Datasets'
+    n.Data_file = os.path.join(n.process_path, "Cakit_model.csv")
     n.run()
     n.draw()
