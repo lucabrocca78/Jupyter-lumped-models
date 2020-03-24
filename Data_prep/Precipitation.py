@@ -16,7 +16,7 @@ shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 
 var = ['Agro', 'Era5']
 
-folder = '/media/D/Datasets/Precipitation/att_fixed'
+folder = '/mnt/e/Datasets/Precipitation/att_fixed'
 os.chdir(folder)
 files = glob.glob('*.nc')
 
