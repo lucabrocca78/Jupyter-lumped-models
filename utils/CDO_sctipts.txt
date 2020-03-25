@@ -1,4 +1,4 @@
-cdo griddes CCS_Turkey_2020-03-07083347am_2015.nc > grid.txt
+zcdo griddes CCS_Turkey_2020-03-07083347am_2015.nc > grid.txt
 cdo setgrid,grid.txt CCS_Turkey_2020-03-07083347am_2015.nc out.nc
 cdo outputtab,name,date,lon,lat,value out.nc > 2020.csv
 
@@ -89,3 +89,5 @@ gdal_grid -zfield value -a invdist:power=2.0:smoothing=1.0 3712 3712 -of GTiff -
 gdal_rasterize -l grid -a value -ts 0.1 0.1 -a_nodata -9999 -te 25.0001 35.0002 44.9996 42.9998 -ot Float32 -of GTiff /home/cak/Desktop/H05B/shp/grid.shp /home/cak/Desktop/H05B/h05B_data/raster.tif
 
 gdal_rasterize -l grid -a value -tr 0.04 0.04 -a_nodata -9999 -te 25.0001 35.0002 44.9996 42.9998 -ot Float32 -of GTiff /home/cak/Desktop/H05B/test/grid.shp /home/cak/Desktop/H05B/test/raster2.tiff
+
+ncrename -d longitude,lon -d latitude,lat -v longitude,lon -v latitude,lat -v t2m,temp Era5_land_temp.nc Era5_land_temp_ren1.nc

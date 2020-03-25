@@ -10,12 +10,13 @@ import cartopy.crs as ccrs
 from osgeo import gdal, ogr
 import sqlite3
 
-file = '/media/D/Datasets/Temperature/Agro_temp_mean.nc'
-file1 = '/media/D/Datasets/Temperature/Era5_land_temp.nc'
+file = '/mnt/e/Datasets/Temperature/rename/Agro_temp.nc'
+file1 = '/mnt/e/Datasets/Temperature/rename/Era5_land_temp.nc'
+file2 = '/mnt/e/Datasets/Temperature/rename/Smap_temp.nc'
 shp = '/home/cak/Desktop/Jupyter-lumped-models/Data/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
-var = ['Agro', 'Era5']
+var = ['Agro', 'Era5', 'Smap']
 
 
 def extract_ts(file, shp, var, type='area', lat=34, lon=34):
@@ -59,16 +60,19 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
                 mask == ID_REGION)
             daily = out_sel.mean(dim=('latitude', 'longitude'))
     else:
-        if var == 'Agro':
-            daily = d.sel(lon=lon, lat=lat, method='nearest')
-        else:
-            daily = d.sel(longitude=lon, latitude=lat, method='nearest')
+        daily = d.sel(lon=lon, lat=lat, method='nearest')
+        if var in ['Era5', 'Smap']:
             daily = daily.drop('time_bnds')
-    for key in daily.keys():
-        daily[key] = daily[key] - 273
-        daily = daily.rename({key: var + '_' + key})
+
+    daily['temp'] = daily['temp'] - 273
+    daily = daily.rename({'temp': var + '_' + 'temp'})
     df = daily.to_dataframe()
+    if var == 'Smap':
+        df.index = df.index.astype(int)
+        df.index = pd.to_datetime(df.index.astype(str))
+        df = df.drop('crs', axis=1)
     df.index = df.index.strftime('%m/%d/%Y')
+    df = df.drop(['lat', 'lon'], axis=1)
 
     return df
 
@@ -100,10 +104,10 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
 # plt.show()
 
 
-conn = sqlite3.connect('/media/D/Datasets/Temperature/temp_db/data.sqlite')
+conn = sqlite3.connect('/mnt/e/Datasets/Temperature/temp_db/data.sqlite')
 cur = conn.cursor()
 
-stationid = 18484
+stationid = 18677
 query = """SELECT  DISTINCT stations.lat,stations.lon  FROM  "Data" d join stations  on d.stationid  = stations.Station where d.stationid  = {} """.format(
     stationid)
 cur.execute(query)
@@ -111,17 +115,16 @@ records = cur.fetchall()
 
 df_Era5_p = extract_ts(file1, shp, var[1], type='point', lon=records[0][1], lat=records[0][0])
 df_Agro_p = extract_ts(file, shp, var[0], type='point', lon=records[0][1], lat=records[0][0])
+df_smap = extract_ts(file2, shp, var[2], type='point', lon=records[0][1], lat=records[0][0])
 
 query = """SELECT  d.date ,d."temp" FROM  "Data" d  WHERE d.stationid  = {} ORDER  by date ;""".format(stationid)
 cur.execute(query)
 records = cur.fetchall()
 measure = pd.DataFrame(records, columns=['time', 'Measurement'])
 measure = measure.set_index('time')
-measure.index = pd.to_datetime(measure.index, format = '%Y-%m-%d')
+measure.index = pd.to_datetime(measure.index, format='%Y-%m-%d')
 measure.index = measure.index.strftime('%m/%d/%Y')
 
-
-
-df = measure.join([df_Era5_p, df_Agro_p])
-df[['Measurement', 'Era5_t2m', 'Agro_Temperature_Air_2m_Mean_24h']].plot()
+df = measure.join([df_Era5_p, df_Agro_p, df_smap])
+df.plot()
 plt.show()
