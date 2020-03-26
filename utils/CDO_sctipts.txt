@@ -90,4 +90,13 @@ gdal_rasterize -l grid -a value -ts 0.1 0.1 -a_nodata -9999 -te 25.0001 35.0002 
 
 gdal_rasterize -l grid -a value -tr 0.04 0.04 -a_nodata -9999 -te 25.0001 35.0002 44.9996 42.9998 -ot Float32 -of GTiff /home/cak/Desktop/H05B/test/grid.shp /home/cak/Desktop/H05B/test/raster2.tiff
 
-ncrename -d longitude,lon -d latitude,lat -v longitude,lon -v latitude,lat -v t2m,temp Era5_land_temp.nc Era5_land_temp_ren1.nc
+ncrename -d longitude,lon -d latitude,lat -v longitude,lon -v latitude,lat Era5_land_temp.nc temp.nc
+ncrename -h -O -v SoilMoist_S_tavg,sm_surface surface_sm.nc
+ncrename -h -O -v TPRECMAX,tp rootzone_sm.nc
+	
+# Convert H14 reduced gaussian grid to regular grid !!
+cdo -f nc setgridtype,regular h14_20200325_0000.grib reg.nc
+
+for file in *.grib;do cdo -f nc setgridtype,regular $file reg_$file;done;
+
+cdo sellonlatbox,25,45,35,43

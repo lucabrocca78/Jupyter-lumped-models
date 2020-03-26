@@ -14,10 +14,11 @@ file = '/mnt/e/Datasets/Temperature/rename/Agro_temp.nc'
 file1 = '/mnt/e/Datasets/Temperature/rename/Era5_land_temp.nc'
 file2 = '/mnt/e/Datasets/Temperature/rename/Smap_temp.nc'
 file3 = '/mnt/e/Datasets/Temperature/rename/E_OBS_temp.nc'
+file4 = '/mnt/e/Datasets/Temperature/rename/Merra2_temp.nc'
 shp = '/mnt/e/Datasets/shp/Basins.shp'
 # shp = '/home/cak/Desktop/NUTS/NUTS_RG_10M_2016_4326_LEVL_0.shp'
 
-var = ['Agro', 'Era5', 'Smap', 'Eobs']
+var = ['Agro', 'Era5', 'Smap', 'Eobs', 'Merra2']
 
 
 def plot(mask, d, nuts):
@@ -44,7 +45,7 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
                                             outlines=list(nuts.geometry.values[i] for i in range(0, num)))
         print(nuts_mask_poly)
 
-        if var in ['Smap', 'Eobs']:
+        if var in ['Smap', 'Eobs', 'Merra2']:
             mask = nuts_mask_poly.mask(d.isel(time=0).sel(lat=slice(35, 43), lon=slice(25, 45)),
                                        lat_name='lat',
                                        lon_name='lon')
@@ -55,7 +56,7 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
         lat = mask.lat.values
         lon = mask.lon.values
 
-        ID_REGION = 2
+        ID_REGION = 0
         # print(nuts.NUTS_ID[ID_REGION])
         print(nuts.ID[ID_REGION])
 
@@ -79,7 +80,7 @@ def extract_ts(file, shp, var, type='area', lat=34, lon=34):
     if var in ['Era5', 'Smap']:
         daily = daily.drop('time_bnds')
 
-    if var != 'Eobs':
+    if var != 'Eobs' and daily.temp.values.max() != 0:
         daily['temp'] = daily['temp'] - 273
     daily = daily.rename({'temp': var + '_' + 'temp'})
     df = daily.to_dataframe()
@@ -107,6 +108,7 @@ df_Era5_p = extract_ts(file1, shp, var[1], type='area', lon=records[0][1], lat=r
 df_Agro_p = extract_ts(file, shp, var[0], type='area', lon=records[0][1], lat=records[0][0])
 df_smap = extract_ts(file2, shp, var[2], type='area', lon=records[0][1], lat=records[0][0])
 df_eobs = extract_ts(file3, shp, var[3], type='area', lon=records[0][1], lat=records[0][0])
+df_merra2 = extract_ts(file4, shp, var[4], type='area', lon=records[0][1], lat=records[0][0])
 
 query = """SELECT  d.date ,d."temp" FROM  "Data" d  WHERE d.stationid  = {} ORDER  by date ;""".format(stationid)
 cur.execute(query)
@@ -116,7 +118,7 @@ measure = measure.set_index('time')
 measure.index = pd.to_datetime(measure.index, format='%Y-%m-%d')
 measure.index = measure.index.strftime('%m/%d/%Y')
 
-df = measure.join([df_Era5_p, df_Agro_p, df_smap, df_eobs])
+df = measure.join([df_Era5_p, df_Agro_p, df_smap, df_eobs, df_merra2])
 print(df.describe())
 # df.cov()
 df.to_csv('test.csv')
