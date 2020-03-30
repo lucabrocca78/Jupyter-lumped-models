@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sqlite3 as db
 
-folder = '/mnt/e/Test/T_2m'
+folder = '/home/cak/Desktop/DWD/T_2m'
 day = datetime.date.today()
 sql_data = str(day) + '.sqlite'
 os.chdir(folder)
@@ -76,11 +76,13 @@ def read_data():
 def plot_data(df, df_temp):
     df_new = df.iloc[:24]
     ax = df_new.plot(figsize=(18, 12))
+
     df_temp.plot(ax=ax)
     fig = plt.gcf()
     name = datetime.datetime.now().strftime("%d-%m-%Y_%I-%M-%S_%p")
     fig.savefig('{}.png'.format(name))
     plt.close()
+
 
 lat = 39.8834
 lon = 32.9013
@@ -89,9 +91,9 @@ df = get_forecast(lat, lon)
 
 create_sql(sql_data, df_weather)
 schedule.every(5).minutes.do(get_data, df_weather=df_weather)
-schedule.every(5).minutes.do(read_data)
+schedule.every(30).minutes.do(read_data)
 df_temp = read_data()
-schedule.every(5).minutes.do(plot_data, df=df, df_temp=df_temp)
+schedule.every(301).minutes.do(plot_data, df=df, df_temp=df_temp)
 
 # plot_data(df,df_temp)
 
