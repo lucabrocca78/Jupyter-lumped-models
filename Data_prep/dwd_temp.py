@@ -74,12 +74,13 @@ def read_data():
 
 
 def plot_data(df, df_temp):
-    ax = df.plot(figsize=(18, 12))
+    df_new = df.iloc[:24]
+    ax = df_new.plot(figsize=(18, 12))
     df_temp.plot(ax=ax)
     fig = plt.gcf()
     name = datetime.datetime.now().strftime("%d-%m-%Y_%I-%M-%S_%p")
     fig.savefig('{}.png'.format(name))
-
+    plt.close()
 
 lat = 39.8834
 lon = 32.9013
@@ -91,6 +92,8 @@ schedule.every(5).minutes.do(get_data, df_weather=df_weather)
 schedule.every(5).minutes.do(read_data)
 df_temp = read_data()
 schedule.every(5).minutes.do(plot_data, df=df, df_temp=df_temp)
+
+# plot_data(df,df_temp)
 
 while True:
     schedule.run_pending()
