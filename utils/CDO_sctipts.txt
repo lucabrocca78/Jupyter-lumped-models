@@ -71,7 +71,7 @@ cdo settaxis,1961-01-01,12:00:00,1day infile outfile
 25,45,35,43
 sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,precipitation 3B42RT_Daily.20190115.7.nc4 pl.png
 sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,swe 20190101_SWE.nc SWE.png
-sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50 -selvar,sce500 20190101_SC_cliped.nc SC.png
+sudo cdo grfill,device="png",min=2,lat_min=30,lat_max=50,lon_min=20,lon_max=50,step_freq=30 -selvar,SWE merge.nc.nc SC.png
 sudo cdo grfill,device="png" -selvar,sce500 20190101_SC_cliped.nc SC.png
 
 sudo cdo grfill,device="GIF_ANIMATION",min=2 -selvar,precipitation 2019_pre_TR.nc pl.gif
@@ -100,3 +100,24 @@ cdo -f nc setgridtype,regular h14_20200325_0000.grib reg.nc
 for file in *.grib;do cdo -f nc setgridtype,regular $file reg_$file;done;
 
 cdo sellonlatbox,25,45,35,43
+
+
+sudo cdo shaded,device="png",step_freq=30 -selvar,SWE merge.nc SC.png
+sudo cdo shaded,device="png",step_freq=30 merge.nc SC.png
+
+
+
+gdal_translate -of netCDF -co "FORMAT=NC4" -a_srs EPSG:3408 2019-01-06.tif t.nc
+
+
+
+sudo grib_to_netcdf -o 1.nc 1.grib2
+for file in *.grib2;do sudo grib_to_netcdf -o ${file:43:18}.nc $file;done;
+
+for file in *.grib2;do echo ${file:43:18};done; 
+
+cdo  -f nc copy
+cdo -b F64 mergetime *.nc merged.nc
+
+ncap2 -s 'time={20200129.5}'  file.nc foo.nc
+
