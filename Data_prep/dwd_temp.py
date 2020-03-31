@@ -11,8 +11,10 @@ import pandas as pd
 import sqlite3 as db
 
 folder = '/home/cak/Desktop/DWD/T_2m'
+folder = '/mnt/e/Test/T_2m'
 day = datetime.date.today()
 sql_data = str(day) + '.sqlite'
+# sql_data = str(day) + '.sqlite'
 os.chdir(folder)
 
 
@@ -89,14 +91,15 @@ lon = 32.9013
 df_weather = pd.DataFrame(columns=['Date', 'temp_measured'])
 df = get_forecast(lat, lon)
 
-create_sql(sql_data, df_weather)
-schedule.every(10).minutes.do(get_data, df_weather=df_weather)
+# create_sql(sql_data, df_weather)
+# schedule.every(10).minutes.do(get_data, df_weather=df_weather)
+df = get_forecast(lat, lon)
 # schedule.every(30).minutes.do(read_data)
 # df_temp = read_data()
 # schedule.every(301).minutes.do(plot_data, df=df, df_temp=df_temp)
 
 # plot_data(df,df_temp)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
