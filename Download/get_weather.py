@@ -11,6 +11,7 @@ import pandas as pd
 import sqlite3 as db
 
 folder = '/mnt/e/Test/T_2m'
+folder = '/home/cak/Desktop/Jupyter-lumped-models/Measurements'
 
 day = datetime.date.today()
 sql_data = str(day) + '_measurements.sqlite'
@@ -31,6 +32,7 @@ def get_data(id):
          'sunrise': str(w.get_sunrise_time(timeformat='date')),
          'sunset': str(w.get_sunset_time(timeformat='date')), 'location': str(l.get_name()), 'lat': l.get_lat(),
          'lon': l.get_lon(), 'station_id': l.get_ID()}
+    print("Data taken at {}".format(str(datetime.datetime.now())))
     return t
 
 
@@ -39,6 +41,7 @@ def create_sql(sql_data, df):
     cur = conn.cursor()
     cur.execute('''DROP TABLE IF EXISTS Result''')
     df.to_sql('Measurements', conn, if_exists='replace')
+    print("Data written at {}".format(str(datetime.datetime.now())))
 
 
 def tosql(df):
@@ -65,10 +68,9 @@ def to_df(df):
 df = to_df(df)
 tosql(df)
 
-schedule.every(1).minutes.do(to_df, df=df)
-schedule.every(3).minutes.do(tosql, df=df)
+schedule.every(10).minutes.do(to_df, df=df)
+schedule.every(25).minutes.do(tosql, df=df)
 
 while True:
     schedule.run_pending()
     time.sleep(1)
-
