@@ -62,5 +62,11 @@ Download/SM2RAIN/
 Data_prep/test_temp.csv
 
 Data_prep/test.csv
-
+*.nc
+*.grb2
+*.inv
+Forecasts/Convert/*
+Forecasts/GFS/*
+*.gz
+*.tar
 at.f90
