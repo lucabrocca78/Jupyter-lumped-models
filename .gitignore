@@ -64,6 +64,9 @@ Data_prep/test_temp.csv
 Data_prep/test.csv
 *.nc
 *.grb2
+*.grib2
+*.grib2.bz2
+index.html
 *.inv
 Forecasts/Convert/*
 Forecasts/GFS/*

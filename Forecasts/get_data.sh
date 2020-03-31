@@ -26,3 +26,6 @@ cdo mergetime *RELHUM_2M*.nc ${currentdate}_humidity.nc
 cdo mergetime *PS*.nc ${currentdate}_pressure.nc
 rm icon*
 rm temp.nc
+cdo merge $currentdate*.nc $currentdate.nc
+tar -czvf ${currentdate}_bak.tar.gz *.nc
+rm $currentdate_*.nc
