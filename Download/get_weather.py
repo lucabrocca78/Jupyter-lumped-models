@@ -62,13 +62,14 @@ def to_df(df):
     for row in stations.iterrows():
         obs = get_data(row[1][1])
         df = df.append([obs])
+        time.sleep(5)
     return df
 
 
 df = to_df(df)
 tosql(df)
 
-schedule.every(10).minutes.do(to_df, df=df)
+schedule.every(20).minutes.do(to_df, df=df)
 schedule.every(25).minutes.do(tosql, df=df)
 
 while True:
