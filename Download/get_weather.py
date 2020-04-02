@@ -45,17 +45,21 @@ def create_sql(sql_data, df):
 
 
 def tosql(df):
-    conn = db.connect(sql_data)
-    cur = conn.cursor()
-    df.to_sql('Measurements', conn, if_exists='append', index=False)
-    conn.commit()
+    try:
+        print(df)
+        conn = db.connect(sql_data)
+        cur = conn.cursor()
+        df.to_sql('Measurements', conn, if_exists='append', index=False)
+        conn.commit()
+    except:
+        print("Couldnt write data")
 
 
 stations = pd.read_csv('weather_stations.csv', names=['City', 'id', 'lat', 'lon'])
 df = pd.DataFrame(columns=['Date', 'temp', 'clouds', 'rain', 'wind_speed',
                            'humidity', 'pressure', 'status', 'sunrise', 'sunset', 'location',
                            'lat', 'lon', 'station_id'])
-create_sql(sql_data, df)
+# create_sql(sql_data, df)
 
 
 def to_df(df):
