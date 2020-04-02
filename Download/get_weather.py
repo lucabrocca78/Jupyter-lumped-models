@@ -66,12 +66,17 @@ def to_df(df):
     return df
 
 
-df = to_df(df)
-tosql(df)
-
-schedule.every(20).minutes.do(to_df, df=df)
-schedule.every(25).minutes.do(tosql, df=df)
-
 while True:
-    schedule.run_pending()
-    time.sleep(1)
+    df = to_df(df)
+    print("Sleeping to get write data")
+    time.sleep(900)
+    tosql(df)
+    time.sleep(900)
+    print("Sleeping to get data")
+
+# schedule.every(20).minutes.do(to_df, df=df)
+# schedule.every(25).minutes.do(tosql, df=df)
+
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
