@@ -20,7 +20,7 @@ for i in {0..120}; do
 done
 
 currentdate=$(date +"%Y-%m-%d")
-for file in *.grb; do wgrib2 $file -netcdf ${file%%.*}.nc; done
+for file in *.grb; do /home/cak/Desktop/software/grib2/wgrib2/wgrib2 $file -netcdf ${file%%.*}.nc; done
 cdo mergetime *.nc temp.nc
 cdo subc,273.15 temp.nc GFS_${currentdate}_temp.nc
 rm *.grb
