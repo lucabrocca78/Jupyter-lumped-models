@@ -62,7 +62,7 @@ df = pd.DataFrame(columns=['Date', 'temp', 'clouds', 'rain', 'rain hours', 'wind
                            'lat', 'lon', 'station_id'])
 
 
-create_sql(sql_data, df)
+# create_sql(sql_data, df)
 
 
 def to_df(df):
