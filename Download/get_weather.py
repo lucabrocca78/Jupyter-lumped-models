@@ -25,7 +25,8 @@ def get_data(id):
     w = observation.get_weather()
     l = observation.get_location()
     t = {'Date': str(w.get_reference_time(timeformat='date')), 'temp': (w.get_temperature('celsius')['temp']),
-         'clouds': w.get_clouds(), 'rain': 0 if len(w.get_rain()) == 0 else w.get_rain(),
+         'clouds': w.get_clouds(), 'rain': 0 if len(w.get_rain()) == 0 else list(w.get_rain().values())[0],
+         'rain hours': 0 if len(w.get_rain()) == 0 else list(w.get_rain().keys())[0],
          'wind_speed': w.get_wind()['speed'],
          'humidity': w.get_humidity(),
          'pressure': w.get_pressure()['press'], 'status': w.get_status(),
@@ -56,10 +57,12 @@ def tosql(df):
 
 
 stations = pd.read_csv('weather_stations.csv', names=['City', 'id', 'lat', 'lon'])
-df = pd.DataFrame(columns=['Date', 'temp', 'clouds', 'rain', 'wind_speed',
+df = pd.DataFrame(columns=['Date', 'temp', 'clouds', 'rain', 'rain hours', 'wind_speed',
                            'humidity', 'pressure', 'status', 'sunrise', 'sunset', 'location',
                            'lat', 'lon', 'station_id'])
-# create_sql(sql_data, df)
+
+
+create_sql(sql_data, df)
 
 
 def to_df(df):
@@ -75,7 +78,7 @@ while True:
     print("Sleeping to get write data")
     time.sleep(900)
     tosql(df)
-    time.sleep(900)
+    time.sleep(1150)
     print("Sleeping to get data")
 
 # schedule.every(20).minutes.do(to_df, df=df)
