@@ -1,5 +1,4 @@
 #!/bin/bash
-export WORKDIR=/home/cak/Desktop/DWD/T_2m/
 export WORKDIR=/home/cak/Desktop/Jupyter-lumped-models/Forecasts/DWD
 export ICON_GRID_FILE=//home/cak/Desktop/Jupyter-lumped-models/Forecasts/Convert/icon_grid_0026_R03B07_G.nc
 export TARGET_GRID_DESCRIPTION=//home/cak/Desktop/Jupyter-lumped-models/Forecasts/Convert/target_grid_EUAU_0125.txt
