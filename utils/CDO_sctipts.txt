@@ -129,3 +129,4 @@ sudo cdo shaded,device="png",min=-5,max=25,lat_min=35,lat_max=45,lon_min=25,lon_
 
 ncl script.ncl
 cdo div GFS_2020-04-03_temp.nc TR_mask.nc out.nc
+
