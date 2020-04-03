@@ -8,7 +8,7 @@ URL1='https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl?file=gfs.t00z.pgrb
 URL2='&lev_2_m_above_ground=on&var_TMP=on&subregion=&leftlon=25&rightlon=45&toplat=45&bottomlat=35&dir=%2Fgfs.20200402%2F00'
 # Let forecast hour vary from 0 to 24.
 # It needs to have three digits, so we start with 1000:
-for i in {0..120}
+for i in {0..24}
 do
   echo $i
   TFCH=`expr 1000 + $i`

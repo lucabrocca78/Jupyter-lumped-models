@@ -121,3 +121,11 @@ cdo -b F64 mergetime *.nc merged.nc
 
 ncap2 -s 'time={20200129.5}'  file.nc foo.nc
 
+
+sudo cdo shaded,device="png",min=-5,max=25,lat_min=35,lat_max=45,lon_min=25,lon_max=45,step_freq=1 -selvar,TMP_2maboveground GFS_2020-04-02_temp.nc SC.png
+
+
+ # Mask TR
+
+ncl script.ncl
+cdo div GFS_2020-04-03_temp.nc TR_mask.nc out.nc
