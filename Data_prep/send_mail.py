@@ -67,7 +67,7 @@ def mail(text, im_fle=False):
 # 'GFS_2020-04-04_temp.gif'
 text = "Hello World"
 image = '/mnt/e/Datasets/GFS/GIF/GFS_{}_temp.gif'.format(datetime.date.today().strftime("%Y-%m-%d"))
-image2 = '/mnt/e/Datasets/GFS/GIF/GFS_{}_temp.gif'.format(datetime.date.today().strftime("%Y-%m-%d"))
+image2 = '/mnt/e/Datasets/GFS/GIF/ICON_{}_temp.gif'.format(datetime.date.today().strftime("%Y-%m-%d"))
 
 html = """\
 <html>
@@ -76,9 +76,9 @@ html = """\
     <table>
         <tbody>
             <tr>
-                <td><img src="cid:image1" alt="Logo" style="width:800px;height:600px;"><br>
+                <td><img src="cid:image" alt="Logo" style="width:800px;height:600px;"><br>
                     <p><h4 style="font-size:15px;">Forecast.</h4></p></td>
-                <td><img src="cid:image1" alt="Logo" style="width:800px;height:600px;"><br>
+                <td><img src="cid:image2" alt="Logo" style="width:800px;height:600px;"><br>
                     <p><h4 style="font-size:15px;">Forecast.</h4></p></td>
             </tr>
         </tbody>
