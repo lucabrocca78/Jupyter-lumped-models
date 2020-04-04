@@ -48,12 +48,23 @@ def mail(text, im_fle=False):
         #     im = MIMEImage(img_data, name=os.path.basename(im_fle))
         #     # image.add_header('Gunluk_Fotograf', 'attachment', filename=im)
         #     msg.attach(im)
-
-        fp = open(im_fle, 'rb')
+        file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/GFS/GIF/GFS_{}_temp.gif'.format(
+            datetime.date.today().strftime("%Y-%m-%d"))
+        fp = open(file, 'rb')
         msgImage = MIMEImage(fp.read())
         fp.close()
         msgImage.add_header('Content-ID', '<image1>')
         msg.attach(msgImage)
+
+        file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/DWD/GIF/ICON_{}_temp.gif'.format(
+            datetime.date.today().strftime("%Y-%m-%d"))
+
+        fp = open(file, 'rb')
+        msgImage = MIMEImage(fp.read())
+        fp.close()
+        msgImage.add_header('Content-ID', '<image2>')
+        msg.attach(msgImage)
+
         server.send_message(msg, mail_from, [mail_to])
         # server.send_message(msg, "e154968@metu.edu.tr", ["cagrkaraman@gmail.com"])
         # TODO: Send email here
@@ -64,11 +75,9 @@ def mail(text, im_fle=False):
         print("Mail sent")
         server.quit()
 
-# 'GFS_2020-04-04_temp.gif'
-text = "Hello World"
-image = '/mnt/e/Datasets/GFS/GIF/GFS_{}_temp.gif'.format(datetime.date.today().strftime("%Y-%m-%d"))
-image2 = '/mnt/e/Datasets/GFS/GIF/ICON_{}_temp.gif'.format(datetime.date.today().strftime("%Y-%m-%d"))
 
+text = "Hello World"
+image = '/mnt/e/Datasets/GFS/GIF/GFS_2020-04-02_temp.gif'
 html = """\
 <html>
   <head></head>
@@ -76,9 +85,9 @@ html = """\
     <table>
         <tbody>
             <tr>
-                <td><img src="cid:image" alt="Logo" style="width:800px;height:600px;"><br>
+                <td><img src="cid:image1" alt="GFS" style="width:800px;height:600px;"><br>
                     <p><h4 style="font-size:15px;">Forecast.</h4></p></td>
-                <td><img src="cid:image2" alt="Logo" style="width:800px;height:600px;"><br>
+                <td><img src="cid:image2" alt="ICON" style="width:800px;height:600px;"><br>
                     <p><h4 style="font-size:15px;">Forecast.</h4></p></td>
             </tr>
         </tbody>
