@@ -73,3 +73,5 @@ Forecasts/GFS/*
 *.gz
 *.tar
 at.f90
+
+*.gif
