@@ -25,6 +25,11 @@ cdo mergetime *RELHUM_2M*.nc ${currentdate}_humidity.nc
 cdo mergetime *PS*.nc ${currentdate}_pressure.nc
 rm icon*
 rm temp.nc
-cdo merge $currentdate*.nc $currentdate.nc
-tar -czvf ${currentdate}_bak.tar.gz $currentdate.nc
+cdo merge $currentdate*.nc ICON_$currentdate.nc
+tar -czvf ICON_${currentdate}_bak.tar.gz ICON_$currentdate.nc
 rm ${currentdate}_*.nc
+
+cdo shaded,device="png",min=-5,max=25,lat_min=35,lat_max=45,lon_min=25,lon_max=45,step_freq=1 -selvar,2t ICON_$currentdate.nc SC.png
+convert -delay 40 'SC.png_2t.11.png.%d.png[0-120]' ICON_${currentdate}_temp.gif
+mv ICON_${currentdate}_temp.gif ./GIF
+mv ICON_${currentdate}.nc ICON_${currentdate}_bak.tar.gz ./Data

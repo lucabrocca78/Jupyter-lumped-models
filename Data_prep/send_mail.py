@@ -64,15 +64,15 @@ def mail(text, im_fle=False):
         print("Mail sent")
         server.quit()
 
-
+# 'GFS_2020-04-04_temp.gif'
 text = "Hello World"
-image = '/mnt/e/Datasets/GFS/GIF/GFS_2020-04-02_temp.gif'
+image = '/mnt/e/Datasets/GFS/GIF/GFS_{}_temp.gif'.format(datetime.date.today().strftime("%Y-%m-%d"))
+image2 = '/mnt/e/Datasets/GFS/GIF/GFS_{}_temp.gif'.format(datetime.date.today().strftime("%Y-%m-%d"))
+
 html = """\
 <html>
   <head></head>
   <body>
-    <img src="cid:image1" alt="Logo" style="width:800px;height:600px;"><br>
-       <p><h4 style="font-size:15px;">Forecast.</h4></p>
     <table>
         <tbody>
             <tr>
