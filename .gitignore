@@ -75,3 +75,5 @@ Forecasts/GFS/*
 at.f90
 
 *.gif
+
+*.png
