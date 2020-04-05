@@ -6,11 +6,13 @@ import datetime
 import sqlite3
 import numpy as np
 
-plt.style.use(['science','ieee'])
+plt.style.use(['ieee'])
+# plt.style.use(['high-vis'])
 
 file = '/mnt/e/Datasets/ICON/GFS_2020-04-04_temp.nc'
 file2 = '/mnt/e/Datasets/ICON/ICON_2020-04-04.nc'
-file3 ='/mnt/e/koray/Data/GEM_2020-04-05.nc'
+file3 = '/mnt/e/koray/Data/GEM_2020-04-05.nc'
+file4 = '/mnt/e/Datasets/ICON/ARPEGE_2020-04-05_temp_C.nc'
 measurements = '/mnt/c/Users/cagri/Desktop/Jupyter-lumped-models/Measurements/2020-04-03_measurements.sqlite'
 w_s = '/mnt/c/Users/cagri/Desktop/Jupyter-lumped-models/Data_prep/weather_stations.csv'
 stations = pd.read_csv(w_s)
@@ -50,6 +52,12 @@ for i, row in enumerate(stations.iterrows()):
     df_gem = get_point_data(file3, lat, lon)
     df_gem = df_gem.drop(['longitude', 'latitude'], axis=1)
     df_gem.rename(columns={'TMP_2maboveground': name}, inplace=True)
+
+    name = 'ARPEGE'
+    df_arpege = get_point_data(file4, lat, lon)
+    df_arpege = df_arpege.drop(['longitude', 'latitude'], axis=1)
+    df_arpege.rename(columns={'TMP_2maboveground': name}, inplace=True)
+
     conn = sqlite3.connect(measurements)
     cur = conn.cursor()
 
@@ -66,21 +74,24 @@ for i, row in enumerate(stations.iterrows()):
     df_measure['Measurement'] = df_measure['Measurement'].astype(np.float64)
 
     df = df_gfs.join(df_icon)
-
+    df = df.join(df_arpege)
     # axs[i].plot(df.index, df[['GFS_Temp_2020-04-04','ICON_Temp__2020-04-0']],df_measure.index, df_measure['Measurement'])
 
     # df_measure.plot(ax=axes[0,0])
-    ax = df_measure.plot(figsize=(12, 6))
-    ax1 = df.plot(ax=ax)
-    df_gem.plot(ax=ax1)
-    ax.set(title=city)
-    ax.set(xlabel='Date')
-    ax.set(ylabel='Temprature , C')
+    with plt.style.context(['science', 'ieee', 'high-vis']):
+    # with plt.style.context(['science', 'ieee']):
+        ax = df_measure.plot(figsize=(12, 6))
+        ax1 = df.plot(ax=ax)
+        df_gem.plot(ax=ax1)
+        ax.set(title=city)
+        ax.set(xlabel='Date')
+        ax.set(ylabel='Temprature , C')
     # ax.autoscale(tight=True)
-    #
+
     # plt.title(city)
     # plt.ylabel('Temprature , C')
     # plt.xlabel('Date')
+    print(city)
     plt.savefig(city + '.png', dpi=300)
 
 # for i, col in enumerate(df2.columns):
