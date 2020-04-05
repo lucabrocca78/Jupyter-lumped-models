@@ -1,7 +1,7 @@
 #!/bin/bash
 # set the base URL in two parts: URL1 and URL2
 # leave our forecast hour:
-export WORKDIR=/mnt/e/koray
+export WORKDIR=/home/cak/Desktop/Jupyter-lumped-models/Forecasts/GEM
 cd ${WORKDIR}
 
 URL1='https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/00/'
