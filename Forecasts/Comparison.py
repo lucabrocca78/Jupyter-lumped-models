@@ -10,6 +10,7 @@ plt.style.use(['science','ieee'])
 
 file = '/mnt/e/Datasets/ICON/GFS_2020-04-04_temp.nc'
 file2 = '/mnt/e/Datasets/ICON/ICON_2020-04-04.nc'
+file3 ='/mnt/e/koray/Data/GEM_2020-04-05.nc'
 measurements = '/mnt/c/Users/cagri/Desktop/Jupyter-lumped-models/Measurements/2020-04-03_measurements.sqlite'
 w_s = '/mnt/c/Users/cagri/Desktop/Jupyter-lumped-models/Data_prep/weather_stations.csv'
 stations = pd.read_csv(w_s)
@@ -45,6 +46,10 @@ for i, row in enumerate(stations.iterrows()):
     df_icon = df_icon.drop(['lon', 'lat', 'height'], axis=1)
     df_icon = df_icon.set_index('time')
 
+    name = 'GEM'
+    df_gem = get_point_data(file3, lat, lon)
+    df_gem = df_gem.drop(['longitude', 'latitude'], axis=1)
+    df_gem.rename(columns={'TMP_2maboveground': name}, inplace=True)
     conn = sqlite3.connect(measurements)
     cur = conn.cursor()
 
@@ -66,7 +71,8 @@ for i, row in enumerate(stations.iterrows()):
 
     # df_measure.plot(ax=axes[0,0])
     ax = df_measure.plot(figsize=(12, 6))
-    df.plot(ax=ax)
+    ax1 = df.plot(ax=ax)
+    df_gem.plot(ax=ax1)
     ax.set(title=city)
     ax.set(xlabel='Date')
     ax.set(ylabel='Temprature , C')
