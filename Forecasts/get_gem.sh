@@ -24,7 +24,7 @@ convert -delay 40 'SC.png_TMP_2maboveground.%d.png[0-41]' GEM_${currentdate}_tem
 rm *.grib2
 rm *.png
 rm temp.nc
-tar -czvf GEM_$currentdate_bak.tar.gz GEM_$currentdate.nc
-mv GEM_$currentdate_bak.tar.gz GEM_$currentdate.nc ./Data
+tar -czvf GEM_${currentdate}_bak.tar.gz GEM_${currentdate}.nc
+mv GEM_${currentdate}_bak.tar.gz GEM_${currentdate}.nc ./Data
 mv GEM_${currentdate}_temp.gif ./GIF
 
