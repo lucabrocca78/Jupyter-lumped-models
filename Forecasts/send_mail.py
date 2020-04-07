@@ -12,7 +12,7 @@ import yaml
 def mail(text, im_fle=False):
     date = datetime.date.today().strftime("%B %d, %Y")
 
-    with open(r'mail.yaml') as file:
+    with open('/home/cak/Desktop/Jupyter-lumped-models/Forecasts/mail.yaml') as file:
         server_list = yaml.load(file)
 
     server = server_list['server']
@@ -48,16 +48,14 @@ def mail(text, im_fle=False):
         #     im = MIMEImage(img_data, name=os.path.basename(im_fle))
         #     # image.add_header('Gunluk_Fotograf', 'attachment', filename=im)
         #     msg.attach(im)
-        file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/GFS/GIF/GFS_{}_temp.gif'.format(
-            datetime.date.today().strftime("%Y-%m-%d"))
+        file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/compare/Ankara.png'
         fp = open(file, 'rb')
         msgImage = MIMEImage(fp.read())
         fp.close()
         msgImage.add_header('Content-ID', '<image1>')
         msg.attach(msgImage)
 
-        file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/DWD/GIF/ICON_{}_temp.gif'.format(
-            datetime.date.today().strftime("%Y-%m-%d"))
+        file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/compare/istanbul.png'
 
         fp = open(file, 'rb')
         msgImage = MIMEImage(fp.read())
