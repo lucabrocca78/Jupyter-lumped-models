@@ -22,7 +22,7 @@ file4 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/ARPEGE/Data/ARPEGE_{}
 # file2 = '/mnt/e/Datasets/ICON/ICON_2020-04-04.nc'
 # file3 = '/mnt/e/koray/Data/GEM_2020-04-05.nc'
 # file4 = '/mnt/e/Datasets/ICON/ARPEGE_2020-04-05_temp_C.nc'
-measurements = '/home/cak/Desktop/Jupyter-lumped-models/Measurements/2020-04-03_measurements.sqlite'
+measurements = '/home/cak/Desktop/Jupyter-lumped-models/Measurements/2020-04-06_measurements.sqlite'
 w_s = '/home/cak/Desktop/Jupyter-lumped-models/Data_prep/weather_stations.csv'
 stations = pd.read_csv(w_s)
 os.chdir('/home/cak/Desktop/Jupyter-lumped-models/Forecasts/compare')
@@ -87,7 +87,8 @@ for i, row in enumerate(stations.iterrows()):
     # axs[i].plot(df.index, df[['GFS_Temp_2020-04-04','ICON_Temp__2020-04-0']],df_measure.index, df_measure['Measurement'])
 
     # df_measure.plot(ax=axes[0,0])
-    with plt.style.context(['science', 'ieee', 'high-vis']):
+    # with plt.style.context(['science', 'ieee', 'high-vis']):
+    with plt.style.context(['science', 'ieee', 'high-vis', 'no-latex']):
         # with plt.style.context(['science', 'ieee']):
         ax = df_measure.plot(figsize=(12, 6))
         ax1 = df.plot(ax=ax)
