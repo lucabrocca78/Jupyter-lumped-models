@@ -9,14 +9,23 @@ import numpy as np
 plt.style.use(['ieee'])
 # plt.style.use(['high-vis'])
 
-file = '/mnt/e/Datasets/ICON/GFS_2020-04-04_temp.nc'
-file2 = '/mnt/e/Datasets/ICON/ICON_2020-04-04.nc'
-file3 = '/mnt/e/koray/Data/GEM_2020-04-05.nc'
-file4 = '/mnt/e/Datasets/ICON/ARPEGE_2020-04-05_temp_C.nc'
-measurements = '/mnt/c/Users/cagri/Desktop/Jupyter-lumped-models/Measurements/2020-04-03_measurements.sqlite'
-w_s = '/mnt/c/Users/cagri/Desktop/Jupyter-lumped-models/Data_prep/weather_stations.csv'
+file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/GFS/Data/GFS_{}_temp.nc'.format(
+    datetime.date.today().strftime("%Y-%m-%d"))
+file2 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/DWD/Data/ICON_{}.nc'.format(
+    datetime.date.today().strftime("%Y-%m-%d"))
+file3 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/GEM/Data/GEM_{}.nc'.format(
+    datetime.date.today().strftime("%Y-%m-%d"))
+file4 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/ARPEGE/Data/ARPEGE_{}_temp_C.nc'.format(
+    datetime.date.today().strftime("%Y-%m-%d"))
+
+# file = '/mnt/e/Datasets/ICON/GFS_2020-04-04_temp.nc'
+# file2 = '/mnt/e/Datasets/ICON/ICON_2020-04-04.nc'
+# file3 = '/mnt/e/koray/Data/GEM_2020-04-05.nc'
+# file4 = '/mnt/e/Datasets/ICON/ARPEGE_2020-04-05_temp_C.nc'
+measurements = '/home/cak/Desktop/Jupyter-lumped-models/Measurements/2020-04-03_measurements.sqlite'
+w_s = '/home/cak/Desktop/Jupyter-lumped-models/Data_prep/weather_stations.csv'
 stations = pd.read_csv(w_s)
-os.chdir('/mnt/e/Datasets/ICON')
+os.chdir('/home/cak/Desktop/Jupyter-lumped-models/Forecasts/compare')
 
 
 def get_point_data(file, lat, lon):
@@ -79,7 +88,7 @@ for i, row in enumerate(stations.iterrows()):
 
     # df_measure.plot(ax=axes[0,0])
     with plt.style.context(['science', 'ieee', 'high-vis']):
-    # with plt.style.context(['science', 'ieee']):
+        # with plt.style.context(['science', 'ieee']):
         ax = df_measure.plot(figsize=(12, 6))
         ax1 = df.plot(ax=ax)
         df_gem.plot(ax=ax1)
