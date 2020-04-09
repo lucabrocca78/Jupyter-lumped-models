@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import xarray as xr
 import os, glob
 import pandas as pd
@@ -9,14 +10,15 @@ import numpy as np
 plt.style.use(['ieee'])
 # plt.style.use(['high-vis'])
 
+day = datetime.date.today().strftime("%Y-%m-%d")
+day = '2020-04-05'
 file = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/GFS/Data/GFS_{}_temp.nc'.format(
-    datetime.date.today().strftime("%Y-%m-%d"))
+    day)
 file2 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/DWD/Data/ICON_{}.nc'.format(
-    datetime.date.today().strftime("%Y-%m-%d"))
+    day)
 file3 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/GEM/Data/GEM_{}.nc'.format(
-    datetime.date.today().strftime("%Y-%m-%d"))
-file4 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/ARPEGE/Data/ARPEGE_{}_temp_C.nc'.format(
-    datetime.date.today().strftime("%Y-%m-%d"))
+    day)
+file4 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/ARPEGE/Data/ARPEGE_{}_temp_C.nc'.format(day)
 
 # file = '/mnt/e/Datasets/ICON/GFS_2020-04-04_temp.nc'
 # file2 = '/mnt/e/Datasets/ICON/ICON_2020-04-04.nc'
@@ -104,6 +106,16 @@ for i, row in stations.iterrows():
     print(city)
     plt.savefig(city + '.png', dpi=300)
 
-# for i, col in enumerate(df2.columns):
-#     print(col)
-#     df2[col].plot(kind="box", ax=axes[i])
+    query = """SELECT m.Date,m."rain" from Measurements m where m.station_id ={} GROUP by m.Date ORDER by m.Date ;""".format(
+        station_id)
+    cur.execute(query)
+    records = cur.fetchall()
+
+    df_measure = pd.DataFrame(records, columns=['time', 'Measurement'])
+    df_measure['time'] = pd.to_datetime(df_measure['time'], format='%Y-%m-%d %H:%M:%S')
+    df_measure['time'] = df_measure['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    df_measure['time'] = pd.to_datetime(df_measure['time'])
+    df_measure = df_measure.set_index('time')
+    df_measure['Measurement'] = df_measure['Measurement'].astype(np.float64)
+    d = df_measure.groupby(pd.Grouper(freq='1D')).sum()
+    # print("a")
