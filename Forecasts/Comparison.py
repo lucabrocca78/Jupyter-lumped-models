@@ -117,5 +117,16 @@ for i, row in stations.iterrows():
     df_measure['time'] = pd.to_datetime(df_measure['time'])
     df_measure = df_measure.set_index('time')
     df_measure['Measurement'] = df_measure['Measurement'].astype(np.float64)
+    print("a")
+# for i, col in enumerate(df2.columns):
+#     print(col)
+#     df2[col].plot(kind="box", ax=axes[i])
+
+    df_measure = pd.DataFrame(records, columns=['time', 'Measurement'])
+    df_measure['time'] = pd.to_datetime(df_measure['time'], format='%Y-%m-%d %H:%M:%S')
+    df_measure['time'] = df_measure['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    df_measure['time'] = pd.to_datetime(df_measure['time'])
+    df_measure = df_measure.set_index('time')
+    df_measure['Measurement'] = df_measure['Measurement'].astype(np.float64)
     d = df_measure.groupby(pd.Grouper(freq='1D')).sum()
     # print("a")
