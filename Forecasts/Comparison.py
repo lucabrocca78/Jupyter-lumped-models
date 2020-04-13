@@ -24,7 +24,7 @@ file4 = '/home/cak/Desktop/Jupyter-lumped-models/Forecasts/ARPEGE/Data/ARPEGE_{}
 # file2 = '/mnt/e/Datasets/ICON/ICON_2020-04-04.nc'
 # file3 = '/mnt/e/koray/Data/GEM_2020-04-05.nc'
 # file4 = '/mnt/e/Datasets/ICON/ARPEGE_2020-04-05_temp_C.nc'
-measurements = '/home/cak/Desktop/Jupyter-lumped-models/Measurements/2020-04-06_measurements.sqlite'
+measurements = '/home/cak/Desktop/Jupyter-lumped-models/Measurements/Measurements.sqlite'
 w_s = '/home/cak/Desktop/Jupyter-lumped-models/Data_prep/weather_stations.csv'
 stations = pd.read_csv(w_s, header=None)
 os.chdir('/home/cak/Desktop/Jupyter-lumped-models/Forecasts/compare')
