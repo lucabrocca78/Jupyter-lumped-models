@@ -147,3 +147,20 @@ Temperature_height_above_ground
 # Remap grid
 
 cdo remapbil,era.txt Era5_land_temp.nc Era5_land_temp_new.nc
+
+
+for file in *.tif;do mv $file ${file:0:21}.tif;done;
+
+for file in *.tif;do echo ${file:0:21}.tif;done;
+
+
+h13_20181222_19GV.tif
+h13_20180428_day_TSMS.tif
+for file in *.tif;do mv $file h13_${file:0:4}${file:5:2}${file:8:2}_19GV.tif;done;
+for file in *.tif;do mv $file h13_${file:0:4}${file:5:2}${file:8:2}_36GH.tif;done;
+for file in *.tif;do echo ${file:0:12}_36GH.tif;done;
+for file in *.tif;do mv $file ${file:0:12}_36GV.tif;done;
+h13_20090325_day_TSMS
+2009-04-03_19GH.tif
+
+sftp -oPort=2225 sentinel1snow@hydras.ugent.be
