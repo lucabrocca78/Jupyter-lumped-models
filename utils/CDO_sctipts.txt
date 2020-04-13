@@ -130,8 +130,8 @@ sudo cdo shaded,device="png",min=-5,max=25,lat_min=35,lat_max=45,lon_min=25,lon_
 ncl script.ncl
 cdo div GFS_2020-04-03_temp.nc TR_mask.nc out.nc
 cdo div Agro_temp.nc /mnt/e/Datasets/Mask/TR/TR_Agro_mask.nc Agro_temp_masked.nc                                          
-cdo div /mnt/e/Datasets/Temperature/rename/Era5_land_temp.nc /mnt/e/Datasets/Mask/TR/TR_mask_era.nc Era5_land_temp_masked.nc                                         
-cdo div /mnt/e/Datasets/Temperature/rename/Merra2_temp.nc /mnt/e/Datasets/Mask/TR/Merra2_mask.nc Merra2_temp_mask.nc                                       
+cdo div /mnt/e/Datasets/Temperature/rename/Era5_land_temp_new.nc /mnt/e/Datasets/Mask/TR/Era5_land_new_mask.nc Era5_land_temp_masked.nc                                         
+cdo div /mnt/e/Datasets/Temperature/rename/Merra2_temp_mask_bil.nc /mnt/e/Datasets/Mask/TR/Merra2_mask.nc Merra2_temp_mask.nc                                       
 cdo div /mnt/e/Datasets/Temperature/rename/Smap_temp.nc /mnt/e/Datasets/Mask/TR/Smap_mask.nc Smap_temp_masked.nc                                       
 
 # Extract time series
@@ -146,4 +146,4 @@ Temperature_height_above_ground
 
 # Remap grid
 
-cdo remapbil,era.txt Merra2_temp_mask.nc Merra2_temp_mask_bil.nc
+cdo remapbil,era.txt Era5_land_temp.nc Era5_land_temp_new.nc
