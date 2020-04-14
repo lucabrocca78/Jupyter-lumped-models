@@ -164,3 +164,12 @@ h13_20090325_day_TSMS
 2009-04-03_19GH.tif
 
 sftp -oPort=2225 sentinel1snow@hydras.ugent.be
+
+# rename variable
+
+ncrename -h -O -v rho,gsize h13_GSIZE.nc
+ncrename -h -O -v rho,gsize h13_GSIZE.nc
+
+ncrename -v rho,gsize h13_GSIZE.nc
+ncrename -v swe,swe_asmr2 amsr2_swe.nc
+swe swe_real rho sd 19HG 19GV 36GH 36GV
