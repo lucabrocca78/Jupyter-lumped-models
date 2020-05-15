@@ -1,8 +1,7 @@
-#!/usr/bin/python3
-
+#!/home/cak/Desktop/Jupyter-lumped-models/venv/bin/python
 import time
 import datetime
-import schedule
+#import schedule
 import os, glob
 import xarray as xr
 import pyowm
