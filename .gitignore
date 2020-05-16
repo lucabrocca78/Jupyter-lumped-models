@@ -79,5 +79,6 @@ at.f90
 *.png
 
 *.log
+*.db
 
 Measurements/Measurements_202004071426.csv
