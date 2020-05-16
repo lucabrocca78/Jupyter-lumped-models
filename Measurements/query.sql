@@ -1,0 +1,1 @@
+SELECT DISTINCT(m.Date) ,m."temp" FROM Measurements m WHERE m.location  = 'Ankara' ORDER by m.Date asc;
